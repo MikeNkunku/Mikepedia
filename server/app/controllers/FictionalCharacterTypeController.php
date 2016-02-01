@@ -46,7 +46,7 @@ class FictionalCharacterTypeController extends BaseController {
 	}
 
 	/**
-	 * param integer $fictionalCharacterTypeId
+	 * @param integer $fictionalCharacterTypeId
 	 */
 	public function delete($fictionalCharacterTypeId) {
 		if (!$this->isAllowed()) {
