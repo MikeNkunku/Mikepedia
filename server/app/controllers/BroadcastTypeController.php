@@ -53,7 +53,7 @@ class BroadcastTypeController extends BaseController {
 	}
 
 	/**
-	 * param integer $broadcastTypeId
+	 * @param integer $broadcastTypeId
 	 */
 	public function delete($broadcastTypeId) {
 		if (!$this->application->request->isDelete()) {
