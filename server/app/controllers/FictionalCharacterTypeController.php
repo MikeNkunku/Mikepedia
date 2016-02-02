@@ -11,6 +11,10 @@ class FictionalCharacterTypeController extends BaseController {
 	 * @param integer $fictionalCharacterTypeId
 	 */
 	public function get($fictionalCharacterTypeId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
@@ -24,6 +28,10 @@ class FictionalCharacterTypeController extends BaseController {
 	}
 
 	public function add() {
+		if (!$this->application->request->isPost()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
@@ -49,6 +57,10 @@ class FictionalCharacterTypeController extends BaseController {
 	 * @param integer $fictionalCharacterTypeId
 	 */
 	public function delete($fictionalCharacterTypeId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
