@@ -27,6 +27,7 @@ class BroadcastTypeController extends BaseController {
 		if (!$this->application->request->isPost()) {
 			throw new Exception('Method not allowed', 405);
 		}
+
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
