@@ -15,10 +15,6 @@ class BroadcastTypeController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		if (!$this->isAllowed()) {
-			throw new Exception('User not authorized', 401);
-		}
-
 		$bt = BroadcastType::findFirst($broadcastTypeId);
 		if (!$bt) {
 			throw new Exception('BroadcastType not found', 404);
