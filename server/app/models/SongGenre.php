@@ -1,5 +1,7 @@
 <?php
 
+namespace Models;
+
 use Phalcon\Mvc\Model;
 
 class SongGenre extends Model {
