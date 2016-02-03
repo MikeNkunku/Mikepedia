@@ -1,6 +1,8 @@
 <?php
 
-use Phalcoh\Mvc\Model;
+namespace Models;
+
+use Phalcon\Mvc\Model;
 
 class TVSeriesGenre extends Model {
 	/**
