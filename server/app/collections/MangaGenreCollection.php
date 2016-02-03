@@ -7,7 +7,7 @@ use \Phalcon\Mvc\Micro\Collection as MicroCollection;
 // Setup Collection
 $mangaGenreCollection = new MicroCollection();
 $mangaGenreCollection->setHandler('Controllers\MangaGenreController', true);
-$mangaGenreCollection->setPrefix('/api/broadcasttypes');
+$mangaGenreCollection->setPrefix('/api/mangas/genres/');
 
 // Define routes
 $mangaGenreCollection->get('/{mangaGenreId:[0-9]+}', 'get');
