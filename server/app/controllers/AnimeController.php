@@ -90,7 +90,7 @@ class AnimeController extends BaseController {
 
 		return array('code' => 201, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
-	
+
 	/**
 	 * @param integer $animeId
 	 */
@@ -98,27 +98,69 @@ class AnimeController extends BaseController {
 		if (!$this->application->request->isDelete()) {
 			throw new Exception('Method not allowed', 405);
 		}
-		
+
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
-		
+
 		$anime = Anime::findFirst($animeId);
 		if (!$anime) {
 			throw new Exception('Anime not found', 404);
 		}
-		
+
 		$statusD = Status::findFirst(array('name' => 'deleted'));
 		$bp = BroadcastProgram::findFirst($anime->getBroadcastProgramId());
 		if ($bp->getStatusId() == $statusD->getId()) {
 			throw new Exception('Anime already deleted', 409);
 		}
-		
+
 		$delete = $bp->update(array('status_id' => $statusD->getId()));
 		if (!$delete) {
 			throw new Exception('Anime not deleted', 409);
 		}
-		
+
 		return array('code' => 204, 'content' => 'Anime deleted');
+	}
+
+	public function update() {
+		if (!$this->application->request->isPut()) {
+			throw new Exception('Method not allowed', 401);
+		}
+
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 405);
+		}
+
+		$putData = $this->application->request->getJsonRawBody();
+		if (empty($putData->typeId)) {
+			throw new Exception('Type ID must not be null', 400);
+		}
+		if (empty($putData->name)) {
+			throw new Exception('Name field must not be empty', 400);
+		}
+		if (empty($putData->startDate)) {
+			throw new Exception('Start date field must not be empty', 400);
+		}
+		if (empty($putData->endDate)) {
+			$putData->endDate = null;
+		}
+		if (empty($putData->summary)) {
+			throw new Exception('Summary field must not be empty', 400);
+		}
+		if (empty($putData->statusId)) {
+			throw new Exception('Status ID field must not be null', 400);
+		}
+
+		$anime = Anime::findFirst($putData->id);
+		$bpId = $anime->beforeUpdate($putData);
+		if (!$bpId) {
+			throw new Exception('Parent class not updated', 409);
+		}
+
+		$bp = BroadcastProgram::findFirst($bpId);
+		$bpArr = $bp->toArray();
+		unset($bpArr['id']);
+
+		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
 }
