@@ -32,8 +32,8 @@ class AnimeController extends BaseController {
 			throw new Exception('Anime is deleted', 409);
 		}
 
-		$bpArray = $bp->toArray();
-		unset($bpArra['id']);
+		$bpArr = $bp->toArray();
+		unset($bpArr['id']);
 
 		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArray));
 	}
