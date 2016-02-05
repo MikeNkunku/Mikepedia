@@ -90,4 +90,35 @@ class AnimeController extends BaseController {
 
 		return array('code' => 201, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
+	
+	/**
+	 * @param integer $animeId
+	 */
+	public function delete($animeId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+		
+		$anime = Anime::findFirst($animeId);
+		if (!$anime) {
+			throw new Exception('Anime not found', 404);
+		}
+		
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$bp = BroadcastProgram::findFirst($anime->getBroadcastProgramId());
+		if ($bp->getStatusId() == $statusD->getId()) {
+			throw new Exception('Anime already deleted', 409);
+		}
+		
+		$delete = $bp->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('Anime not deleted', 409);
+		}
+		
+		return array('code' => 204, 'content' => 'Anime deleted');
+	}
 }
