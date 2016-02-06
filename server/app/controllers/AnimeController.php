@@ -163,4 +163,26 @@ class AnimeController extends BaseController {
 
 		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 401);
+		}
+
+		$output = array();
+		$animes = Anime::find(array('order' => 'id ASC'));
+		foreach($animes as $a) {
+			$bp = BroadcastProgram::findFirst($a->getBroadcastProgramId());
+			$status = Status::findFirst($bp->getStatusId());
+			array_push($output, array(
+					'id' => $a->getId(),
+					'name' => $bp->getName(),
+					'status' => $status->getName(),
+					'createdAt' => $bp->getCreatedAt(),
+					'updatedAt' => $bp->getUpdatedAt()
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
