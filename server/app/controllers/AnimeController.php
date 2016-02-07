@@ -191,6 +191,35 @@ class AnimeController extends BaseController {
 		if (!$this->application->request->isGet()) {
 			throw new Exception('Method not allowed', 401);
 		}
+
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$bt = BroadcastType::findFirst(array('name' => 'anime'));
+		$parameters = array(
+				'typeId' => $bt->getId()
+		);
+		$BPs = BroadcastProgram::query()
+		->notInWhere('status_id', $statusD->getId())
+		->where('type_id = :typeId:')
+		->bind($parameters)
+		->execute();
+		if (!$BPs) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		$output = array();
+		foreach($BPs as $bp) {
+			$a = Anime::findFirst(array('broadcast_program_id' => $bp->getId()));
+			$status = Status::findFirst($bp->getStatusId());
+			array_push($output, array(
+					'id' => $a->getId(),
+					'name' => $bp->getName(),
+					'status' => $status->getName(),
+					'createdAt' => $bp->getCreatedAt(),
+					'updatedAt' => $bp->getUpdatedAt()
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 
 	/**
