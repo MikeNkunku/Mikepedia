@@ -185,4 +185,43 @@ class AnimeController extends BaseController {
 
 		return array('code' => 200, 'content' => $output);
 	}
+
+	public function getValidList() {
+
+	}
+
+	/**
+	 * @param text $statusName
+	 */
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 401);
+		}
+
+		$statuses = Status::find(array('columns' => 'name'));
+		$sArr = $statuses->toArray();
+		if (!in_array($statusName, $sArr)) {
+			throw new Exception('Unvalid parameter', 409);
+		}
+
+		$output = array();
+		$status = Status::findFirst(array('name' => $statusName));
+		$animes = Anime::find(array(
+				'status_id' => $status->getId(),
+				'order' => 'id ASC'
+		));
+		foreach($animes as $a) {
+			$bp = BroadcastProgram::findFirst($a->getBroadcastProgramId());
+			$status = Status::findFirst($bp->getStatusId());
+			array_push($output, array(
+					'id' => $a->getId(),
+					'name' => $bp->getName(),
+					'status' => $status->getName(),
+					'createdAt' => $bp->getCreatedAt(),
+					'updatedAt' => $bp->getUpdatedAt()
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
