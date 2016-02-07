@@ -5,6 +5,7 @@ namespace Controllers;
 use Phalcon\Exception;
 use BaseController;
 use Models\BroadcastProgram;
+use Models\BroadcastType;
 use Models\Anime;
 use Models\Status;
 
@@ -187,7 +188,9 @@ class AnimeController extends BaseController {
 	}
 
 	public function getValidList() {
-
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 401);
+		}
 	}
 
 	/**
@@ -206,12 +209,14 @@ class AnimeController extends BaseController {
 
 		$output = array();
 		$status = Status::findFirst(array('name' => $statusName));
-		$animes = Anime::find(array(
+		$bt = BroadcastType::findFirst(array('name' => 'anime'));
+		$BPs = BroadcastProgram::find(array(
 				'status_id' => $status->getId(),
+				'type_id' => $bt->getId(),
 				'order' => 'id ASC'
 		));
-		foreach($animes as $a) {
-			$bp = BroadcastProgram::findFirst($a->getBroadcastProgramId());
+		foreach($BPs as $bp) {
+			$a = Anime::findFirst(array('broadcast_program_id' => $bp->getId()));
 			$status = Status::findFirst($bp->getStatusId());
 			array_push($output, array(
 					'id' => $a->getId(),
