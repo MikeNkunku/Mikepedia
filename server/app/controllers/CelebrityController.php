@@ -89,7 +89,8 @@ class CelebrityController extends BaseController {
 			throw new Exception('Celebrity instance not created', 409);
 		}
 
-		$pArr = Person::findFirst($pId);
+		$p = Person::findFirst($pId);
+		$pArr = $p->toArray();
 		unset($pArr['id']);
 
 		return array('code' => 201, 'content' => array_merge($c->toArray(), $pArr));
