@@ -36,7 +36,7 @@ class AnimeController extends BaseController {
 		$bpArr = $bp->toArray();
 		unset($bpArr['id']);
 
-		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArray));
+		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
 
 	public function add() {
