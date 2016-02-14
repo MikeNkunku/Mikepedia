@@ -198,8 +198,8 @@ class AnimeController extends BaseController {
 				'typeId' => $bt->getId()
 		);
 		$BPs = BroadcastProgram::query()
-		->notInWhere('status_id', $statusD->getId())
 		->where('type_id = :typeId:')
+		->notInWhere('status_id', $statusD->getId())
 		->bind($parameters)
 		->execute();
 		if (!$BPs) {
