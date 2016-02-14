@@ -185,4 +185,32 @@ class CelebrityController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Celebrity deleted');
 	}
+
+	/**
+	 * @param text $statusName
+	 */
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$celebrities = Celebrity::find();
+		$output = array();
+		foreach ($celebrities as $c) {
+			$p = Person::findFirst($c->getPersonId());
+			$s = Status::findFirst($p->getStatusId());
+			if ($s->getName() == $statusName) {
+				array_push($output, array(
+						'id' => $c->getId(),
+						'firstname' => $p->getFirstname(),
+						'lastname' => $p->getLastname(),
+						'created_at' => $p->getCreatedAt(),
+						'updated_at' => $p->getUpdatedAt(),
+						// 'status' => $statusName
+				));
+			}
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
