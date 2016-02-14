@@ -159,4 +159,30 @@ class CelebrityController extends BaseController {
 
 		return array('code' => 200, 'content' => array_merge($c->toArray, $pArr));
 	}
+
+	/**
+	 * @param integer $celebrityId
+	 */
+	public function delete($celebrityId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$p = Person::findFirst($c->getPersonId());
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		if ($p->getStatusId() == $statusD->getId()) {
+			throw new Exception('Celebrity already deleted', 409);
+		}
+
+		$delete = $p->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('Celebrity not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'Celebrity deleted');
+	}
 }
