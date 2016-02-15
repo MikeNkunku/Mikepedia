@@ -6,7 +6,7 @@ use \Phalcon\Mvc\Micro\Collection as MicroCollection;
 
 $animeCollection = new MicroCollection();
 $animeCollection->setHandler('Controllers\AnimeController');
-$animeCollection->setPrefix('/api/collections');
+$animeCollection->setPrefix('/api/animes');
 
 $animeCollection->get('/{animeId:[0-9]+}', 'get');
 $animeCollection->post('/', 'add');
