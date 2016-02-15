@@ -184,4 +184,41 @@ class EpisodeController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Episode deleted');
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$episodes = Episode::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('id')
+		->execute();
+		if (!$episodes) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		if ($episodes->count() == 0) {
+			return array('code' => 200, 'content' => 'No episode instance in database');
+		}
+
+		$output = array();
+		foreach ($episodes as $e) {
+			$season = Season::findFirst($e->getSeasonId());
+			$bp = BroadcastProgram::findFirst($season->getProgramId());
+			$status = Status::findFirst($e->getStatusId());
+			array_push($output, array(
+					'id' => $e->getId(),
+					'number' => $e->getNumber(),
+					'status' => $status->getName(),
+					'seasonNumber' => $season->getNumber(),
+					'programName' => $bp->getName(),
+					'createdAt' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $p->getUpdatedAt())
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
