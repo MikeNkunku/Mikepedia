@@ -185,6 +185,35 @@ class EpisodeController extends BaseController {
 		return array('code' => 204, 'content' => 'Episode deleted');
 	}
 
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$episodes = Episode::find(array('order' => 'id'));
+		if ($episodes->count() == 0) {
+			return array('code' => 200, 'content' => 'No episode instance in database');
+		}
+
+		$output = array();
+		foreach ($episodes as $e) {
+			$season = Season::findFirst($e->getSeasonId());
+			$bp = BroadcastProgram::findFirst($season->getProgramId());
+			$status = Status::findFirst($e->getStatusId());
+			array_push($output, array(
+					'id' => $e->getId(),
+					'number' => $e->getNumber(),
+					'status' => $status->getName(),
+					'seasonNumber' => $season->getNumber(),
+					'programName' => $bp->getName(),
+					'createdAt' => date('Y-m-d H:i:sP', $e->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $e->getUpdatedAt())
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
+
 	public function getValidList() {
 		if (!$this->application->request->isGet()) {
 			throw new Exception('Method not allowed', 405);
