@@ -70,6 +70,7 @@ class Season extends Model {
 		$this->setSource('seasons');
 		$this->belongsTo('type_id', 'Models\BroadcastType', 'id');
 		$this->belongsTo('status_id', 'Models\Status', 'id');
+		$this->belongsTo('program_id', 'Models\BroadcastProgram', 'id');
 		$this->hasMany('id', 'Models\Episode', 'season_id');
 	}
 
