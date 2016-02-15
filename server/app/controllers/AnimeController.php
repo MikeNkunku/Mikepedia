@@ -35,6 +35,8 @@ class AnimeController extends BaseController {
 
 		$bpArr = $bp->toArray();
 		unset($bpArr['id']);
+		$bpArr['created_at'] = date('Y-m-d H:i:sP', $bpArr['created_at']);
+		$bpArr['updated_at'] = date('Y-m-d H:i:sP', $bpArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
@@ -88,6 +90,8 @@ class AnimeController extends BaseController {
 		$bp = BroadcastProgram::findFirst($bpId);
 		$bpArr = $bp->toArray();
 		unset($bpArr['id']);
+		$bpArr['created_at'] = date('Y-m-d H:i:sP', $bpArr['created_at']);
+		$bpArr['updated_at'] = date('Y-m-d H:i:sP', $bpArr['updated_at']);
 
 		return array('code' => 201, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
@@ -161,6 +165,8 @@ class AnimeController extends BaseController {
 		$bp = BroadcastProgram::findFirst($bpId);
 		$bpArr = $bp->toArray();
 		unset($bpArr['id']);
+		$bpArr['created_at'] = date('Y-m-d H:i:sP', $bpArr['created_at']);
+		$bpArr['updated_at'] = date('Y-m-d H:i:sP', $bpArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($anime->toArray(), $bpArr));
 	}
@@ -214,8 +220,8 @@ class AnimeController extends BaseController {
 					'id' => $a->getId(),
 					'name' => $bp->getName(),
 					'status' => $status->getName(),
-					'createdAt' => $bp->getCreatedAt(),
-					'updatedAt' => $bp->getUpdatedAt()
+					'createdAt' => date('Y-m-d H:i:sP', $bp->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $bp->getUpdatedAt())
 			));
 		}
 
@@ -251,8 +257,8 @@ class AnimeController extends BaseController {
 					'id' => $a->getId(),
 					'name' => $bp->getName(),
 					'status' => $status->getName(),
-					'createdAt' => $bp->getCreatedAt(),
-					'updatedAt' => $bp->getUpdatedAt()
+					'createdAt' => date('Y-m-d H:i:sP', $bp->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $bp->getUpdatedAt())
 			));
 		}
 
