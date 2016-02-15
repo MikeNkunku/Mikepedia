@@ -250,4 +250,46 @@ class EpisodeController extends BaseController {
 
 		return array('code' => 200, 'content' => $output);
 	}
+
+	/**
+	 * @param text $statusName
+	 */
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statuses = Status::find();
+		$sArr = $statuses->toArray('name');
+		if (!in_array($statusName, $sArr)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$status = Status::findFirst(array('name' => $statusName));
+		$episodes = Episode::find(array(
+				'status_id' => $status->getId(),
+				'order' => 'id'
+		));
+
+		if ($episodes->count() == 0) {
+			return array('code' => 200, 'content' => 'No matching episode found');
+		}
+
+		$output = array();
+		foreach ($episodes as $e) {
+			$season = Season::findFirst($e->getSeasonId());
+			$bp = BroadcastProgram::findFirst($season->getProgramId());
+			array_push($output, array(
+					'id' => $e->getId(),
+					'number' => $e->getNumber(),
+					// 'status' => $status->getName(),
+					'seasonNumber' => $season->getNumber(),
+					'programName' => $bp->getName(),
+					'createdAt' => date('Y-m-d H:i:sP', $e->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $e->getUpdatedAt())
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
