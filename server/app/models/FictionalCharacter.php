@@ -62,6 +62,7 @@ class FictionalCharacter extends Person {
 		$create = $p->create(array(
 				'firstname' => $postData->firstname,
 				'status_id' => $postData->statusId,
+				'type_id' => 'FictionalCharacter',
 				'lastname' => $postData->lastname,
 				'gender' => $postData->gender,
 				'nicknames' => $postData->nicknames,
