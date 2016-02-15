@@ -261,6 +261,12 @@ class CelebrityController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
+		$statuses = Status::find();
+		$sArr = $statuses->toArray('name');
+		if (!in_array($statusName, $sArr)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
 		$celebrities = Celebrity::find();
 		$output = array();
 		foreach ($celebrities as $c) {
