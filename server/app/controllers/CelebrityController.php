@@ -36,6 +36,8 @@ class CelebrityController extends BaseController {
 
 		$pArr = $p->toArray();
 		unset($pArr['id']);
+		$pArr['created_at'] = date('Y-m-d H:i:sP', $pArr['created_at']);
+		$pArr['updated_at'] = date('Y-m-d H:i:sP', $pArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($c->toArray(), $pArr));
 	}
@@ -94,6 +96,8 @@ class CelebrityController extends BaseController {
 		$p = Person::findFirst($pId);
 		$pArr = $p->toArray();
 		unset($pArr['id']);
+		$pArr['created_at'] = date('Y-m-d H:i:sP', $pArr['created_at']);
+		$pArr['updated_at'] = date('Y-m-d H:i:sP', $pArr['updated_at']);
 
 		return array('code' => 201, 'content' => array_merge($c->toArray(), $pArr));
 	}
@@ -158,6 +162,8 @@ class CelebrityController extends BaseController {
 		$p = Person::findFirst($c->getPersonId());
 		$pArr = $p->toArray();
 		unset($pArr['id']);
+		$pArr['created_at'] = date('Y-m-d H:i:sP', $pArr['created_at']);
+		$pArr['updated_at'] = date('Y-m-d H:i:sP', $pArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($c->toArray, $pArr));
 	}
@@ -203,8 +209,8 @@ class CelebrityController extends BaseController {
 					'firstname' => $p->getFirstname(),
 					'lastname' => $p->getLastname(),
 					'status' => $s->getName(),
-					'created_at' => $p->getCreatedAt(),
-					'updated_at' => $p->getUpdatedAt()
+					'created_at' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
+					'updated_at' => date('Y-m-d H:i:sP', $p->getUpdatedAt())
 			));
 		}
 
@@ -239,8 +245,8 @@ class CelebrityController extends BaseController {
 					'firstname' => $p->getFirstname(),
 					'lastname' => $p->getLastname(),
 					'status' => $status->getName(),
-					'createdAt' => $p->getCreatedAt(),
-					'updatedAt' => $p->getUpdatedAt()
+					'createdAt' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $p->getUpdatedAt())
 			));
 		}
 
@@ -265,8 +271,8 @@ class CelebrityController extends BaseController {
 						'id' => $c->getId(),
 						'firstname' => $p->getFirstname(),
 						'lastname' => $p->getLastname(),
-						'created_at' => $p->getCreatedAt(),
-						'updated_at' => $p->getUpdatedAt(),
+						'created_at' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
+						'updated_at' => date('Y-m-d H:i:sP', $p->getUpdatedAt()),
 						// 'status' => $statusName
 				));
 			}
