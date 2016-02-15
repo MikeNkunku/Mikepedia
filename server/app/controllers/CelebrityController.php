@@ -2,6 +2,8 @@
 
 namespace Controllers;
 
+use Models\PersonType;
+
 use Phalcon\Exception;
 use BaseController;
 use Models\Celebrity;
@@ -203,6 +205,42 @@ class CelebrityController extends BaseController {
 					'status' => $s->getName(),
 					'created_at' => $p->getCreatedAt(),
 					'updated_at' => $p->getUpdatedAt()
+			));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$pt = PersonType::findFirst(array('name' => 'Celebrity'));
+		$parameters = array(
+				'typeId' => $pt->getId()
+		);
+		$persons = Person::query()
+		->where('type_id = :typeId:')
+		->notInWhere('status_id', $statusD->getId())
+		->bind($parameters)
+		->execute();
+		if (!$persons) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		$output = array();
+		foreach($persons as $p) {
+			$c = Celebrity::findFirst(array('person_id' => $p->getId()));
+			$status = Status::findFirst($p->getStatusId());
+			array_push($output, array(
+					'id' => $c->getId(),
+					'firstname' => $p->getFirstname(),
+					'lastname' => $p->getLastname(),
+					'status' => $status->getName(),
+					'createdAt' => $p->getCreatedAt(),
+					'updatedAt' => $p->getUpdatedAt()
 			));
 		}
 
