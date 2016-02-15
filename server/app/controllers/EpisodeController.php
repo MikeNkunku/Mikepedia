@@ -155,4 +155,33 @@ class EpisodeController extends BaseController {
 
 		return array('code' => 200, 'content' => array_merge($eArr, $seasonNumber, $bpName));
 	}
+
+	/**
+	 * @param integer $episodeId
+	 */
+	public function delete($episodeId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$episode = Episode::findFirst($episodeId);
+		if (!$episode) {
+			throw new Exception('Episode not found', 404);
+		}
+
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$update = $episode->update(array(
+				'status_id' => $statusD->getId(),
+				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
+		));
+		if (!$update) {
+			throw new Exception('Episode not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'Episode deleted');
+	}
 }
