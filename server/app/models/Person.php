@@ -16,6 +16,11 @@ class Person extends Model {
 	protected $status_id;
 
 	/**
+	 * @var integer
+	 */
+	protected $type_id;
+
+	/**
 	 * @var text
 	 */
 	protected $firstname;
@@ -83,6 +88,7 @@ class Person extends Model {
 	public function initialize() {
 		$this->setSource('persons');
 		$this->belongsTo('status_id', 'Models\Status', 'id');
+		$this->belongsTo('type_id', 'Models\PersonType', 'id');
 	}
 
 	/**
@@ -104,6 +110,20 @@ class Person extends Model {
 	 */
 	public function setStatusId($statusId) {
 		$this->status_id = $statusId;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getTypeId() {
+		return $this->type_id;
+	}
+
+	/**
+	 * @param integer $typeId
+	 */
+	public function setTypeId($typeId) {
+		$this->type_id = $typeId;
 	}
 
 	/**
