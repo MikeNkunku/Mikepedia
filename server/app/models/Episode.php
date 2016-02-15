@@ -77,16 +77,6 @@ class Episode extends Model {
 	}
 
 	/**
-	 * @return boolean
-	 */
-	public function delete() {
-		$s = Status::findFirst(array('name' => 'deleted'));
-		$delete = $this->update(array('status_id' => $s->getId()));
-
-		return $delete ? true : false;
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getId() {
