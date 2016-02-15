@@ -3,7 +3,6 @@
 namespace Models;
 
 use Person;
-use TVSeries;
 
 class FictionalCharacter extends Person {
 	/**
