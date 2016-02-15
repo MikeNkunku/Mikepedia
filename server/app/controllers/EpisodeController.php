@@ -243,8 +243,8 @@ class EpisodeController extends BaseController {
 					'status' => $status->getName(),
 					'seasonNumber' => $season->getNumber(),
 					'programName' => $bp->getName(),
-					'createdAt' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
-					'updatedAt' => date('Y-m-d H:i:sP', $p->getUpdatedAt())
+					'createdAt' => date('Y-m-d H:i:sP', $e->getCreatedAt()),
+					'updatedAt' => date('Y-m-d H:i:sP', $e->getUpdatedAt())
 			));
 		}
 
