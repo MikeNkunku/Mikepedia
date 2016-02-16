@@ -178,7 +178,24 @@ class GameController extends BaseController {
 	}
 
 	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
 
+		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$games = Game::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('release_year DESC')
+		->execute();
+		if (!$games) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		if ($games->count() == 0) {
+			return array('code' => 200, 'content' => 'No game in database');
+		}
+
+		return array('code' => 200, 'content' => $games->toArray('id', 'title', 'platforms', 'genres', 'release_year'));
 	}
 
 	/**
