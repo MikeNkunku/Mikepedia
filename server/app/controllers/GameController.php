@@ -195,14 +195,33 @@ class GameController extends BaseController {
 			return array('code' => 200, 'content' => 'No game in database');
 		}
 
-		return array('code' => 200, 'content' => $games->toArray('id', 'title', 'platforms', 'genres', 'release_year'));
+		return array('code' => 200, 'content' => $games->toArray());
 	}
 
 	/**
 	 * @param text $statusName
 	 */
 	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
 
+		$statuses = Status::find();
+		$sArr = $statuses->toArray('name');
+		if (!in_array($statusName, $sArr)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$status = Status::findFirst(array('name' => $statusName));
+		$games = Game::find(array('status_id' => $status->getId(), 'order' => 'id ASC'));
+		if (!$games) {
+			throw new Exception('Query encountered error', 409);
+		}
+		if ($games->count() == 0) {
+			return array('code' => 200, 'content' => 'No matching game found in database');
+		}
+
+		return array('code' => 200, 'content' => $games->toArray());
 	}
 
 	/**
