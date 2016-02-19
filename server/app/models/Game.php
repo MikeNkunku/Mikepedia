@@ -17,12 +17,12 @@ class Game extends Model {
 	protected $title;
 
 	/**
-	 * @var integer[]
+	 * @var text
 	 */
 	protected $genres;
 
 	/**
-	 * @var integer[]
+	 * @var text
 	 */
 	protected $platforms;
 
@@ -85,7 +85,7 @@ class Game extends Model {
 				'status_id' => $s->getId(),
 				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
 		));
-		
+
 		return $delete ? true : false;
 	}
 
@@ -114,11 +114,11 @@ class Game extends Model {
 	 * @return integer[]
 	 */
 	public function getGenres() {
-		return $this->genres;
+		return array_map('intval', explode('; ', $this->genres));
 	}
 
 	/**
-	 * @param integer[] $genres
+	 * @param text $genres
 	 */
 	public function setGenres($genres) {
 		$this->genres = $genres;
@@ -128,11 +128,11 @@ class Game extends Model {
 	 * @return integer[]
 	 */
 	public function getPlatforms() {
-		return $this->platforms;
+		return array_map('intval', explode('; ', $this->platforms));
 	}
 
 	/**
-	 * @param integer[] $platforms
+	 * @param text $platforms
 	 */
 	public function setPlatforms($platforms) {
 		$this->platforms = $platforms;
