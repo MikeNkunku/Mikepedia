@@ -109,10 +109,10 @@ class TVSeries extends BroadcastProgram {
 	}
 
 	/**
-	 * @return text
+	 * @return integer[]
 	 */
 	public function getMainCast() {
-		return $this->main_cast;
+		return array_map('intval', explode('; ', $this->main_cast));
 	}
 
 	/**
