@@ -228,7 +228,35 @@ class GameController extends BaseController {
 	 * @param integer $gameGenreId
 	 */
 	public function getByGenre($gameGenreId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
 
+		$GGs = GameGenre::find();
+		$ggArr = $GGs->toArray('id');
+		if (!in_array($gameGenreId, $ggArr)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$games = Game::find();
+		$ggArr = $GGS->toArray();
+		$output = array();
+		foreach($games as $g) {
+			$genres = $g->getGenres();
+			$temp = array();
+			if (in_array($gameGenreId, $genres)) {
+				foreach($genres as $gg) {
+					$genre = GameGenre::findFirst($gg);
+					array_push($temp, $genre->getName());
+				}
+
+				$gArr = $g->toArray();
+				unset($gArr['genres']);
+				array_push($output, array_merge($gArr, array('genres' => $temp)));
+			}
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 
 	/**
