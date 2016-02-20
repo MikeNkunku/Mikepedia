@@ -263,6 +263,43 @@ class GameController extends BaseController {
 	 * @param integer $gamePlatformId
 	 */
 	public function getByPlatform($gamePlatformId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
 
+		$GPs = GamePlatform::find();
+		$gpIDs = $GPS->toArray('id');
+		if (!in_array($gamePlatformId, $gpIDs)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$conditions = "platforms LIKE ?1";
+		$bindParams = array(1 => '%'.$gamePlatformId.'%');
+		$games = Games::find(array(
+				'conditions' => $conditions,
+				'bind' => $bindParams,
+				'order' => 'id ASC'
+		));
+		if (!$games) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($games->count() == 0) {
+			return array('code' => 200, 'content' => 'No matching game found in database');
+		}
+
+		$output = array();
+		foreach($games as $g) {
+			$platforms = $g->getPlaforms();
+			$temp = array();
+			foreach($platforms as $pID) {
+				$gp = GamePlatform::findFirst($pID);
+				array_push($temp, $gp->getName());
+			}
+			$gArr = $g->toArray();
+			$gArr['platforms'] = $temp;
+			array_push($output, $gArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 }
