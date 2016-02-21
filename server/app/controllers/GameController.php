@@ -212,8 +212,16 @@ class GameController extends BaseController {
 			throw new Exception('Invalid parameter', 409);
 		}
 
-		$status = Status::findFirst(array('name' => $statusName));
-		$games = Game::find(array('status_id' => $status->getId(), 'order' => 'id ASC'));
+		$status = Status::findFirst(array(
+				"name = :name:",
+				'bind' => array('name' => $statusName)
+		));
+
+		$games = Game::find(array(
+				"status_id = :id:",
+				'bind' => array('id' => $status->getId()),
+				'order' => 'id ASC'
+		));
 		if (!$games) {
 			throw new Exception('Query encountered error', 409);
 		}
