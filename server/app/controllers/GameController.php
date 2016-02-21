@@ -150,7 +150,10 @@ class GameController extends BaseController {
 			throw new Exception('Game not found', 404);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst(array(
+				"name = :status:",
+				'bind' => array('status' => 'deleted')
+		));
 		if ($statusD->getId() == $game->getStatusId()) {
 			throw new Exception('Game already deleted', 409);
 		}
