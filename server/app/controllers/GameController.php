@@ -281,10 +281,9 @@ class GameController extends BaseController {
 			throw new Exception('Invalid parameter', 409);
 		}
 
-		$params = array(1 => '%'.$gamePlatformId.'%');
 		$games = Games::find(array(
 				"platforms LIKE ?1",
-				'bind' => $params,
+				'bind' => array(1 => '%'.$gamePlatformId.'%'),
 				'order' => 'title ASC'
 		));
 		if (!$games) {
