@@ -26,15 +26,16 @@ class GameController extends BaseController {
 		}
 
 		$gameSections = GameSection::find(array(
-				'game_id' => $game->getId(),
-				'order' => 'id'
+				"game_id = :id:",
+				'bind' => array('id' => $game->getId()),
+				'order' => 'id ASC'
 		));
-		$gsArr = $gameSections->toArray('title', 'summary');
+		$gsArr = $gameSections->toArray('id', 'title', 'summary');
 
-		return array('code' => 200, 'content' => array(
-				'game' => $game->toArray(),
-				'gameSections' => $gsArr
-		));
+		$gArr = $game->toArray();
+		$gArr['gameSections'] = $gsArr;
+
+		return array('code' => 200, 'content' => $gArr);
 	}
 
 	public function add() {
