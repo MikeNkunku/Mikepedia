@@ -251,8 +251,8 @@ class GameController extends BaseController {
 				}
 
 				$gArr = $g->toArray();
-				unset($gArr['genres']);
-				array_push($output, array_merge($gArr, array('genres' => $temp)));
+				$gArr['genres'] = $temp;
+				array_push($output, $gArr);
 			}
 		}
 
