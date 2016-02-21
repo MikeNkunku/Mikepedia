@@ -302,4 +302,29 @@ class GameController extends BaseController {
 
 		return array('code' => 200, 'content' => $output);
 	}
+
+	/**
+	 * @param integer $year
+	 */
+	public function getByYear($year) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$params = array('year' => $year);
+		$games = Game::find(array(
+				"release_year = :year:",
+				'bind' => $params,
+				'order' => 'title ASC'
+		));
+		if (!$games) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		if ($games->count() == 0) {
+			return array('code' => 200, 'content' => 'No matching game found in database');
+		}
+
+		return array('code' => 200, 'content' => $games->toArray());
+	}
 }
