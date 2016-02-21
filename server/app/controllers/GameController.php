@@ -317,10 +317,9 @@ class GameController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$params = array('year' => $year);
 		$games = Game::find(array(
 				"release_year = :year:",
-				'bind' => $params,
+				'bind' => array('year' => $year),
 				'order' => 'title ASC'
 		));
 		if (!$games) {
