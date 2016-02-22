@@ -34,7 +34,9 @@ class TVSeriesGenreController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$tvsg = TVSeriesGenre::findFirst(array('name' => $postData->name));
+		$tvsg = TVSeriesGenre::findFirst(array(
+			'conditions' => "name => :name:",
+			'bind' => array('name' => $postData->name));
 		if ($tvsg) {
 			throw new Exception('TVSeriesGenre already created', 409);
 		}
