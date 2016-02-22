@@ -34,7 +34,10 @@ class ProductionTypeController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$pt = ProductionType::findFirst(array('name' => $postData->name));
+		$pt = ProductionType::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => $postData->name
+		));
 		if ($pt) {
 			throw new Exception('ProductionType already created', 409);
 		}
