@@ -34,7 +34,10 @@ class MovieGenreController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$mg = MovieGenre::findFirst(array('name' => $postData->name));
+		$mg = MovieGenre::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($mg) {
 			throw new Exception('MovieGenre already created', 409);
 		}
