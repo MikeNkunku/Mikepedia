@@ -34,7 +34,10 @@ class BroadcastTypeController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$bt = BroadcastType::findFirst(array('name' => $postData->name));
+		$bt = BroadcastType::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($bt) {
 			throw new Exception('BroadcastType already created', 409);
 		}
