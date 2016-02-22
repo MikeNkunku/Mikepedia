@@ -28,7 +28,7 @@ class AnimeController extends BaseController {
 			throw new Exception('BroadcastProgram not found', 404);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		if ($bp->getStatusId() == $statusD->getId()) {
 			throw new Exception('Anime is deleted', 409);
 		}
@@ -113,7 +113,7 @@ class AnimeController extends BaseController {
 			throw new Exception('Anime not found', 404);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		$bp = BroadcastProgram::findFirst($anime->getBroadcastProgramId());
 		if ($bp->getStatusId() == $statusD->getId()) {
 			throw new Exception('Anime already deleted', 409);
@@ -198,8 +198,8 @@ class AnimeController extends BaseController {
 			throw new Exception('Method not allowed', 401);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
-		$bt = BroadcastType::findFirst(array('name' => 'anime'));
+		$statusD = Status::findFirst("name = 'deleted'"));
+		$bt = BroadcastType::findFirst("name = 'anime'"));
 		$parameters = array(
 				'typeId' => $bt->getId()
 		);
@@ -214,7 +214,10 @@ class AnimeController extends BaseController {
 
 		$output = array();
 		foreach($BPs as $bp) {
-			$a = Anime::findFirst(array('broadcast_program_id' => $bp->getId()));
+			$a = Anime::findFirst(array(
+				'conditions' => "broadcast_program_id = ?1",
+				'bind' => array(1 => $bp->getId())
+			));
 			$status = Status::findFirst($bp->getStatusId());
 			array_push($output, array(
 					'id' => $a->getId(),
@@ -251,7 +254,10 @@ class AnimeController extends BaseController {
 				'order' => 'id ASC'
 		));
 		foreach($BPs as $bp) {
-			$a = Anime::findFirst(array('broadcast_program_id' => $bp->getId()));
+			$a = Anime::findFirst(array(
+				'conditions' => "broadcast_program_id = ?1",
+				'bind' => array(1 => $bp->getId())
+			));
 			$status = Status::findFirst($bp->getStatusId());
 			array_push($output, array(
 					'id' => $a->getId(),
