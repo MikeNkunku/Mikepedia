@@ -34,7 +34,10 @@ class MangaPublicController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$mp = MangaPublic::findFirst(array('name' => $postData->name));
+		$mp = MangaPublic::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($mp) {
 			throw new Exception('MangaPublic already created', 409);
 		}
