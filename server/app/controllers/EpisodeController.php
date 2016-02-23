@@ -26,16 +26,14 @@ class EpisodeController extends BaseController {
 		}
 
 		$season = Season::findFirst($episode->getSeasonId());
-		$seasonNumber = $season->getNumber();
-
 		$BP = BroadcastProgram::findFirst($season->getProgramId());
-		$bpName = $BP->getName();
+		$info = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
 
 		$eArr = $episode->toArray();
 		$eArr['created_at'] = date('Y-m-d H:i:sP', $eArr['created_at']);
 		$eArr['updated_at'] = date('Y-m-d H:i:sP', $eArr['updated_at']);
 
-		return array('code' => 200, 'content' => array_merge($eArr, $seasonNumber, $bpName));
+		return array('code' => 200, 'content' => array_merge($eArr, $info));
 	}
 
 	public function add() {
