@@ -29,7 +29,7 @@ class CelebrityController extends BaseController {
 			throw new Exception('Parent class not found', 404);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		if ($p->getStatusId() == $statusD->getId()) {
 			throw new Exception('Celebrity is deleted', 409);
 		}
@@ -181,7 +181,7 @@ class CelebrityController extends BaseController {
 		}
 
 		$p = Person::findFirst($c->getPersonId());
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		if ($p->getStatusId() == $statusD->getId()) {
 			throw new Exception('Celebrity already deleted', 409);
 		}
@@ -222,8 +222,8 @@ class CelebrityController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
-		$pt = PersonType::findFirst(array('name' => 'Celebrity'));
+		$statusD = Status::findFirst("name = 'deleted'"));
+		$pt = PersonType::findFirst("name = 'Celebrity'"));
 		$parameters = array(
 				'typeId' => $pt->getId()
 		);
@@ -238,7 +238,10 @@ class CelebrityController extends BaseController {
 
 		$output = array();
 		foreach($persons as $p) {
-			$c = Celebrity::findFirst(array('person_id' => $p->getId()));
+			$c = Celebrity::findFirst(array(
+				'conditions' => "person_id = :id:",
+				'bind' => array('id' => $p->getId())
+			));
 			$status = Status::findFirst($p->getStatusId());
 			array_push($output, array(
 					'id' => $c->getId(),
