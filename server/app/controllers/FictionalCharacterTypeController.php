@@ -38,7 +38,10 @@ class FictionalCharacterTypeController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$fct = FictionalCharacterType::findFirst(array('name' => $postData->name));
+		$fct = FictionalCharacterType::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($fct) {
 			throw new Exception('FictionalCharacterType already created', 409);
 		}
