@@ -34,7 +34,10 @@ class MangaGenreController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$mg = MangaGenre::findFirst(array('name' => $postData->name));
+		$mg = MangaGenre::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($mg) {
 			throw new Exception('MangaGenre already created', 409);
 		}
