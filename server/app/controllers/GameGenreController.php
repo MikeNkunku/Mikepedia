@@ -34,7 +34,10 @@ class GameGenreController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$gg = GameGenre::findFirst(array('name' => $postData->name));
+		$gg = GameGenre::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($gg) {
 			throw new Exception('GameGenre already created', 409);
 		}
