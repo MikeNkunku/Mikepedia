@@ -291,16 +291,20 @@ class GameController extends BaseController {
 		foreach($games as $g) {
 			$genres = $g->getGenres();
 			$temp = array();
-			if (in_array($gameGenreId, $genres)) {
-				foreach($genres as $gg) {
-					$genre = GameGenre::findFirst($gg);
-					array_push($temp, $genre->getName());
-				}
-
-				$gArr = $g->toArray();
-				$gArr['genres'] = $temp;
-				array_push($output, $gArr);
+			if (!in_array($gameGenreId, $genres)) {
+				continue;
 			}
+
+			foreach($genres as $gg) {
+				$genre = GameGenre::findFirst($gg);
+				array_push($temp, $genre->getName());
+			}
+
+			$gArr = $g->toArray();
+			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
+			$gArr['genres'] = $temp;
+			array_push($output, $gArr);
 		}
 
 		return array('code' => 200, 'content' => $output);
