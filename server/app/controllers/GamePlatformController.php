@@ -34,7 +34,10 @@ class GamePlatformController extends BaseController {
 
 		$postData = $this->application->request->getJsonRawBody();
 
-		$gp = GamePlatform::findFirst(array('name' => $postData->name));
+		$gp = GamePlatform::findFirst(array(
+			'conditions' => "name = :name:",
+			'bind' => array('name' => $postData->name)
+		));
 		if ($gp) {
 			throw new Exception('GamePlatform already created', 409);
 		}
