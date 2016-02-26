@@ -204,7 +204,7 @@ class GameController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		$games = Game::query()
 		->notInWhere('status_id', $statusD->getId())
 		->order('release_year DESC')
@@ -217,7 +217,15 @@ class GameController extends BaseController {
 			return array('code' => 200, 'content' => 'No game in database');
 		}
 
-		return array('code' => 200, 'content' => $games->toArray());
+		$output = array();
+		foreach($games as $g) {
+			$gArr = $g->toArray();
+			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
+			array_push($output, $gArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 
 	/**
