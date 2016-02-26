@@ -188,7 +188,15 @@ class GameController extends BaseController {
 			return array('code' => 200, 'content' => 'No games instanciated');
 		}
 
-		return array('code' => 200, 'content' => $games->toArray());
+		$output = array();
+		foreach($games as $g) {
+			$gArr = $g->toArray();
+			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
+			array_push($output, $gArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 
 	public function getValidList() {
