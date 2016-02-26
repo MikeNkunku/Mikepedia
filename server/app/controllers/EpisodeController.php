@@ -167,7 +167,7 @@ class EpisodeController extends BaseController {
 			throw new Exception('Episode not found', 404);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		$update = $episode->update(array(
 				'status_id' => $statusD->getId(),
 				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
