@@ -162,7 +162,7 @@ class GameController extends BaseController {
 		}
 
 		$statusD = Status::findFirst(array(
-				"name = :status:",
+				'conditions' => "name = :status:",
 				'bind' => array('status' => 'deleted')
 		));
 		if ($statusD->getId() == $game->getStatusId()) {
