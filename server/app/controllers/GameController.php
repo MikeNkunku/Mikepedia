@@ -325,7 +325,7 @@ class GameController extends BaseController {
 		}
 
 		$games = Games::find(array(
-				"platforms LIKE ?1",
+				'conditions' => "platforms LIKE ?1",
 				'bind' => array(1 => '%'.$gamePlatformId.'%'),
 				'order' => 'title ASC'
 		));
@@ -346,6 +346,8 @@ class GameController extends BaseController {
 			}
 			$gArr = $g->toArray();
 			$gArr['platforms'] = $temp;
+			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
 			array_push($output, $gArr);
 		}
 
