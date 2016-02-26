@@ -213,7 +213,7 @@ class EpisodeController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$statusD = Status::findFirst(array('name' => 'deleted'));
+		$statusD = Status::findFirst("name = 'deleted'"));
 		$episodes = Episode::query()
 		->notInWhere('status_id', $statusD->getId())
 		->order('id')
