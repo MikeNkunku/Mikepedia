@@ -82,7 +82,11 @@ class GameController extends BaseController {
 			throw new Exception('Game not created', 409);
 		}
 
-		return array('code' => 201, 'content' => $game->toArray());
+		$gArr = $game->toArray();
+		$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+		$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
+
+		return array('code' => 201, 'content' => $gArr;
 	}
 
 	/**
