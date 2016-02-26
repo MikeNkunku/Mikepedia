@@ -64,4 +64,44 @@ class LyricsController extends BaseController {
 
 		return array('code' => 201, 'content' => $lArr);
 	}
+
+	/**
+	* @param integer $lyricsId
+	*/
+	public function update($lyricsId) {
+		if (!$this->application->request->isPut()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$putData = $this->application->request->getJsonRawBody();
+		if (empty($putData->statusId)) {
+			throw new Exception('Status ID cannot be null', 409);
+		}
+		if (empty($putData->songId)) {
+			throw new Exception('Lyrics must be associated with a song', 409);
+		}
+		if (empty($putData->content)) {
+			throw new Exception('Content field must be filled', 409);
+		}
+
+		$lyrics = Lyrics::findFirst($lyricsId);
+		$lyrics->beforeUpdate();
+		$update = $lyrics->update(array(
+			'song_id' => $putData->songId,
+			'status_id' => $putData->statusId,
+			'content' => $putData->Content
+		));
+		if (!$update) {
+			throw new Exception('Lyrics instance not updated', 409);
+		}
+
+		$lArr = $lyrics->toArray();
+		$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
+		$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
+
+		return array('code' => 200, 'content' => $lArr);
+	}
 }
