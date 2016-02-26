@@ -363,7 +363,7 @@ class GameController extends BaseController {
 		}
 
 		$games = Game::find(array(
-				"release_year = :year:",
+				'conditions' => "release_year = :year:",
 				'bind' => array('year' => $year),
 				'order' => 'title ASC'
 		));
@@ -375,6 +375,14 @@ class GameController extends BaseController {
 			return array('code' => 200, 'content' => 'No matching game found in database');
 		}
 
-		return array('code' => 200, 'content' => $games->toArray());
+		$output = array();
+		foreach($games as $g) {
+			$gArr = $g->toArray();
+			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
+			array_push($output, $gArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 }
