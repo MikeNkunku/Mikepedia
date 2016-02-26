@@ -33,6 +33,8 @@ class GameController extends BaseController {
 		$gsArr = $gameSections->toArray('id', 'title', 'summary');
 
 		$gArr = $game->toArray();
+		$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+		$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
 		$gArr['gameSections'] = $gsArr;
 
 		return array('code' => 200, 'content' => $gArr);
