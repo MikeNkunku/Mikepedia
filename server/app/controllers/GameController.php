@@ -243,23 +243,32 @@ class GameController extends BaseController {
 		}
 
 		$status = Status::findFirst(array(
-				"name = :name:",
+				'conditions' => "name = :name:",
 				'bind' => array('name' => $statusName)
 		));
 
 		$games = Game::find(array(
-				"status_id = :id:",
+				'conditions' => "status_id = :id:",
 				'bind' => array('id' => $status->getId()),
 				'order' => 'id ASC'
 		));
 		if (!$games) {
 			throw new Exception('Query encountered error', 409);
 		}
+
 		if ($games->count() == 0) {
-			return array('code' => 200, 'content' => 'No matching game found in database');
+			return array('code' => 200, 'content' => 'No game in database');
 		}
 
-		return array('code' => 200, 'content' => $games->toArray());
+		$output = array();
+		foreach($games as $g) {
+			$gArr = $g->toArray();
+			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
+			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
+			array_push($output, $gArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
 	}
 
 	/**
