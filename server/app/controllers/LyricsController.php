@@ -135,4 +135,28 @@ class LyricsController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Lyrics instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$lyrics = Lyrics::find();
+		if (!$lyrics) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($lyrics->count() == 0) {
+			return array('code' => 200, 'content' => 'No lyrics instance found');
+		}
+
+		$output = array();
+		foreach($lyrics as $l) {
+			$lArr = $lyrics->toArray();
+			$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
+			$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
+			array_push($output, $lArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
