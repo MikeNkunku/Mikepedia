@@ -188,4 +188,43 @@ class LyricsController extends BaseController {
 
 		return array('code' => 200, 'content' => $output);
 	}
+
+	/**
+	* @param text $statusName
+	*/
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statuses = Status::find();
+		$sArr = $statuses->toArray('name');
+		if (!in_array($st, $sArr)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$status = Status::findFirst(array('conditions' => "name = :name:", 'bind' => array('name' => $statusName)));
+		$lyrics = Lyrics::find(array(
+			'conditions' => "status_id = :id:",
+			'bind' => array('id' => $status->getId()),
+			'order' => 'updated_at DESC'
+		));
+
+		if (!lyrics) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($lyrics->count() == 0) {
+			return array('code' => 204, 'content' => 'No lyrics instance found');
+		}
+
+		$output = array();
+		foreach($lyrics as $l) {
+			$lArr = $lyrics->toArray();
+			$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
+			$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
+			array_push($output, $lArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
