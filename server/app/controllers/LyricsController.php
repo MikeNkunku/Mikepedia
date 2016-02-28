@@ -104,4 +104,35 @@ class LyricsController extends BaseController {
 
 		return array('code' => 200, 'content' => $lArr);
 	}
+
+	/**
+	* @param integer $lyricsId
+	*/
+	public function delete($lyricsId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$lyrics = Lyrics::findFirst($lyricsId);
+		if (!$lyrics) {
+			throw new Exception('Lyrics instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		if ($lyrics->getStatusId() == $statusD->getId()) {
+			throw new Exception('Lyrics instance already deleted', 409);
+		}
+
+		$lyrics->beforeUpdate();
+		$delete = $lyrics->update(array('status_id' => $statusD->getId()));
+
+		if (!$delete) {
+			throw new Exception('Lyrics instance not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'Lyrics instance deleted');
+	}
 }
