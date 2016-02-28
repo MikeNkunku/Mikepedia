@@ -8,6 +8,7 @@ use BaseController;
 use Models\Manga;
 use Models\MangaGenre;
 use Models\MangaPublic;
+use Models\Status;
 
 class MangaController extends BaseController {
 	/**
@@ -138,5 +139,35 @@ class MangaController extends BaseController {
 		}
 
 		return array('code' => 200, 'content' => $manga->toArray());
+	}
+
+	/**
+	* @param integer $mangaId
+	*/
+	public function delete($mangaId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$manga = Manga::findFirst($mangaId);
+		if (!$manga) {
+			throw new Exception('Manga instance not found', 404);
+		}
+
+		$statusD =  Status::findFirst("name = 'deleted'");
+		if ($manga->getStatusId() ==  $statusD->getId()) {
+			throw new Exception('Manga instance already deleted', 409);
+		}
+
+		$manga->beforeUpdate();
+		$delete = $manga->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('Manga instance not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'Manga instance deleted');
 	}
 }
