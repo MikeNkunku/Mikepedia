@@ -170,4 +170,32 @@ class MangaController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Manga instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$mangas = Mangas::find(array('order' => 'name ASC'));
+		if (!$mangas) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($mangas->count() == 0) {
+			return array('code' => 200, 'content' => 'No Manga instance found');
+		}
+
+		$output = array();
+		foreach ($mangas as $m) {
+			$mArr = $manga->toArray();
+			$mgNames = array();
+			foreach ($mArr['genres'] as $mg) {
+				$mg = MangaGenre::findFirst($mg);
+				array_push($mgNames, $mg->getName());
+			}
+			$mArr['genres'] = $mgNames;
+			array_push($output, $mArr);
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
