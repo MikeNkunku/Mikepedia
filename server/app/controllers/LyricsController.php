@@ -3,8 +3,10 @@
 namespace Controllers;
 
 use Phalcon\Exception;
+
 use BaseController;
 use Models\Lyrics;
+use Models\Status;
 
 class LyricsController extends BaseController {
 	/**
