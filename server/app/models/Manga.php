@@ -174,10 +174,10 @@ class Manga extends Model {
 	}
 
 	/**
-	 * @return text
+	 * @return array[integer]
 	 */
 	public function getGenres() {
-		return $this->genres;
+		return array_map('intval', explode($this->genres, '; '));
 	}
 
 	/**
