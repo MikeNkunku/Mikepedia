@@ -22,11 +22,7 @@ class LyricsController extends BaseController {
 			throw new Exception('Lyrics not found', 404);
 		}
 
-		$lArr = $lyrics->toArray();
-		$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
-		$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
-
-		return array('code' => 200, 'content' => $lArr);
+		return array('code' => 200, 'content' => $lyrics->toArray());
 	}
 
 	public function add() {
@@ -60,11 +56,7 @@ class LyricsController extends BaseController {
 			throw new Exception('Lyrics instance not created', 409);
 		}
 
-		$lArr = $lyrics->toArray();
-		$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
-		$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
-
-		return array('code' => 201, 'content' => $lArr);
+		return array('code' => 201, 'content' => $lyrics->toArray());
 	}
 
 	/**
@@ -100,11 +92,7 @@ class LyricsController extends BaseController {
 			throw new Exception('Lyrics instance not updated', 409);
 		}
 
-		$lArr = $lyrics->toArray();
-		$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
-		$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
-
-		return array('code' => 200, 'content' => $lArr);
+		return array('code' => 200, 'content' => $lyrics->toArray());
 	}
 
 	/**
@@ -151,15 +139,7 @@ class LyricsController extends BaseController {
 			return array('code' => 204, 'content' => 'No lyrics instance found');
 		}
 
-		$output = array();
-		foreach($lyrics as $l) {
-			$lArr = $lyrics->toArray();
-			$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
-			$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
-			array_push($output, $lArr);
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $lyrics->toArray());
 	}
 
 	public function getValidList() {
@@ -180,15 +160,7 @@ class LyricsController extends BaseController {
 			return array('code' => 204, 'content' => 'No matching Lyrics instance found');
 		}
 
-		$output = array();
-		foreach($lyrics as $l) {
-			$lArr = $lyrics->toArray();
-			$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
-			$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
-			array_push($output, $lArr);
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $lyrics->toArray());
 	}
 
 	/**
@@ -219,14 +191,6 @@ class LyricsController extends BaseController {
 			return array('code' => 204, 'content' => 'No lyrics instance found');
 		}
 
-		$output = array();
-		foreach($lyrics as $l) {
-			$lArr = $lyrics->toArray();
-			$lArr['created_at'] = date('Y-m-d H:i:sP', $lArr['created_at']);
-			$lArr['updated_at'] = date('Y-m-d H:i:sP', $lArr['updated_at']);
-			array_push($output, $lArr);
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $lyrics->toArray());
 	}
 }
