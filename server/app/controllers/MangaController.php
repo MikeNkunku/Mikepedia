@@ -34,4 +34,53 @@ class MangaController extends BaseController {
 
 		return array('code' => 200, 'content' => $mArr);
 	}
+
+	public function add() {
+		if (!$this->application->request->isPost()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$postData = $this->application->request->getJsonRawBody();
+		if (empty($postData->name)) {
+			throw new Exception('Name field cannot be empty', 409);
+		}
+		if (empty($postData->statusId)) {
+			throw new Exception('Status ID cannot be null', 409);
+		}
+		if (empty($postData->creatorId)) {
+			throw new Exception('Creator ID field must be filled', 409);
+		}
+		if (empty($postData->hasAnime)) {
+			throw new Exception('HasAnime field must be filled', 409);
+		}
+		if (empty($postData->year)) {
+			throw new Exception('Year field must be filled', 409);
+		}
+		if (empty($postData->genres)) {
+			throw new Exception('Genres field must at least contains one element', 409);
+		}
+		if (empty($postData->demographyId)) {
+			throw new Exception('Demography ID cannot be empty', 409);
+		}
+
+		$manga = new Manga();
+		$manga->beforeCreate();
+		$create = $manga->create(array(
+			'name' => $postData->name,
+			'status_id' => $postData->statusId,
+			'creator_id' => $postData->creatorId,
+			'has_anime' => $postData->hasAnime,
+			'year' => $postData->year,
+			'genres' => $postData->genres,
+			'demography_id' => $postData->demographyId
+		));
+		if (!$create) {
+			throw new Exception('Manga instance not created', 409);
+		}
+
+		return array('code' => 201, 'content' => $manga->toArray());
+	}
 }
