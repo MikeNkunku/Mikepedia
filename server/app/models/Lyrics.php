@@ -118,23 +118,9 @@ class Lyrics extends Model {
 	}
 
 	/**
-	 * @param timestamp $createdAt
-	 */
-	public function setCreatedAt($createdAt) {
-		$this->created_at = $createdAt;
-	}
-
-	/**
 	 * @return timestamp
 	 */
 	public function getUpdatedAt() {
 		return $this->updated_at;
-	}
-
-	/**
-	 * @param timestamp $updatedAt
-	 */
-	public function setUpdatedAt($updatedAt) {
-		$this->updated_at = $updatedAt;
 	}
 }
