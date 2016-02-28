@@ -181,7 +181,7 @@ class MangaController extends BaseController {
 			throw new Exception('Query not executed', 409);
 		}
 		if ($mangas->count() == 0) {
-			return array('code' => 200, 'content' => 'No Manga instance found');
+			return array('code' => 204, 'content' => 'No Manga instance found');
 		}
 
 		$output = array();
