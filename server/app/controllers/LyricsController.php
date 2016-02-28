@@ -146,7 +146,7 @@ class LyricsController extends BaseController {
 			throw new Exception('Query not executed', 409);
 		}
 		if ($lyrics->count() == 0) {
-			return array('code' => 200, 'content' => 'No lyrics instance found');
+			return array('code' => 204, 'content' => 'No lyrics instance found');
 		}
 
 		$output = array();
