@@ -36,8 +36,6 @@ class CelebrityController extends BaseController {
 
 		$pArr = $p->toArray();
 		unset($pArr['id']);
-		$pArr['created_at'] = date('Y-m-d H:i:sP', $pArr['created_at']);
-		$pArr['updated_at'] = date('Y-m-d H:i:sP', $pArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($c->toArray(), $pArr));
 	}
@@ -86,8 +84,8 @@ class CelebrityController extends BaseController {
 			throw new Exception('EarlyLife field must not be empty', 409);
 		}
 		$create = $c->create(array(
-				'person_id' => $pId,
-				'early_life' => $postData->early_life
+			'person_id' => $pId,
+			'early_life' => $postData->early_life
 		));
 		if (!$create) {
 			throw new Exception('Celebrity instance not created', 409);
@@ -96,8 +94,6 @@ class CelebrityController extends BaseController {
 		$p = Person::findFirst($pId);
 		$pArr = $p->toArray();
 		unset($pArr['id']);
-		$pArr['created_at'] = date('Y-m-d H:i:sP', $pArr['created_at']);
-		$pArr['updated_at'] = date('Y-m-d H:i:sP', $pArr['updated_at']);
 
 		return array('code' => 201, 'content' => array_merge($c->toArray(), $pArr));
 	}
@@ -162,8 +158,6 @@ class CelebrityController extends BaseController {
 		$p = Person::findFirst($c->getPersonId());
 		$pArr = $p->toArray();
 		unset($pArr['id']);
-		$pArr['created_at'] = date('Y-m-d H:i:sP', $pArr['created_at']);
-		$pArr['updated_at'] = date('Y-m-d H:i:sP', $pArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($c->toArray, $pArr));
 	}
@@ -205,12 +199,12 @@ class CelebrityController extends BaseController {
 			$p = Person::findFirst($c->getPersonId());
 			$s = Status::findFirst($p->getStatusId());
 			array_push($output, array(
-					'id' => $c->getId(),
-					'firstname' => $p->getFirstname(),
-					'lastname' => $p->getLastname(),
-					'status' => $s->getName(),
-					'created_at' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
-					'updated_at' => date('Y-m-d H:i:sP', $p->getUpdatedAt())
+				'id' => $c->getId(),
+				'firstname' => $p->getFirstname(),
+				'lastname' => $p->getLastname(),
+				'status' => $s->getName(),
+				'created_at' => $p->getCreatedAt(),
+				'updated_at' => $p->getUpdatedAt()
 			));
 		}
 
@@ -244,12 +238,12 @@ class CelebrityController extends BaseController {
 			));
 			$status = Status::findFirst($p->getStatusId());
 			array_push($output, array(
-					'id' => $c->getId(),
-					'firstname' => $p->getFirstname(),
-					'lastname' => $p->getLastname(),
-					'status' => $status->getName(),
-					'createdAt' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
-					'updatedAt' => date('Y-m-d H:i:sP', $p->getUpdatedAt())
+				'id' => $c->getId(),
+				'firstname' => $p->getFirstname(),
+				'lastname' => $p->getLastname(),
+				'status' => $status->getName(),
+				'createdAt' => $p->getCreatedAt(),
+				'updatedAt' => $p->getUpdatedAt()
 			));
 		}
 
@@ -277,12 +271,11 @@ class CelebrityController extends BaseController {
 			$s = Status::findFirst($p->getStatusId());
 			if ($s->getName() == $statusName) {
 				array_push($output, array(
-						'id' => $c->getId(),
-						'firstname' => $p->getFirstname(),
-						'lastname' => $p->getLastname(),
-						'created_at' => date('Y-m-d H:i:sP', $p->getCreatedAt()),
-						'updated_at' => date('Y-m-d H:i:sP', $p->getUpdatedAt()),
-						// 'status' => $statusName
+					'id' => $c->getId(),
+					'firstname' => $p->getFirstname(),
+					'lastname' => $p->getLastname(),
+					'updated_at' => $p->getUpdatedAt(),
+					'created_at' => $p->getCreatedAt(),
 				));
 			}
 		}
