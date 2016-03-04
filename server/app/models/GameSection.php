@@ -147,13 +147,13 @@ class GameSection extends Model {
 	 * @return timestamp
 	 */
 	public function getCreatedAt() {
-		return $this->created_at;
+		return date('Y-m-d H:i:sP', $this->created_at);
 	}
 
 	/**
 	 * @return timestamp
 	 */
 	public function getUpdatedAt() {
-		return $this->updated_at;
+		return date('Y-m-d H:i:sP', $this->updated_at);
 	}
 }
