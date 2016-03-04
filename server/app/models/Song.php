@@ -134,14 +134,14 @@ class Song extends Model {
 	/**
 	 * @return timestamp
 	 */
-	public function getUpdatedAt() {
-		return $this->updated_at;
+	public function getCreatedAt() {
+		return date('Y-m-d H:i:sP', $this->created_at);
 	}
 
 	/**
-	 * @param timestamp $updatedAt
+	 * @return timestamp
 	 */
-	public function setUpdatedAt($updatedAt) {
-		$this->updated_at = $updatedAt;
+	public function getUpdatedAt() {
+		return date('Y-m-d H:i:sP', $this->updated_at);
 	}
 }
