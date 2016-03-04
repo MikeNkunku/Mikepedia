@@ -78,8 +78,8 @@ class AnimeController extends BaseController {
 			throw new Exception('Manga ID must not be null', 400);
 		}
 		$create = $anime->create(array(
-				'broadcast_program_id' => $bpId,
-				'manga_id' => $postData->mangaId
+			'broadcast_program_id' => $bpId,
+			'manga_id' => $postData->mangaId
 		));
 		if (!$create) {
 			throw new Exception('Anime not created', 409);
@@ -176,11 +176,11 @@ class AnimeController extends BaseController {
 			$bp = BroadcastProgram::findFirst($a->getBroadcastProgramId());
 			$status = Status::findFirst($bp->getStatusId());
 			array_push($output, array(
-					'id' => $a->getId(),
-					'name' => $bp->getName(),
-					'status' => $status->getName(),
-					'createdAt' => $bp->getCreatedAt(),
-					'updatedAt' => $bp->getUpdatedAt()
+				'id' => $a->getId(),
+				'name' => $bp->getName(),
+				'status' => $status->getName(),
+				'createdAt' => $bp->getCreatedAt(),
+				'updatedAt' => $bp->getUpdatedAt()
 			));
 		}
 
@@ -194,9 +194,7 @@ class AnimeController extends BaseController {
 
 		$statusD = Status::findFirst("name = 'deleted'"));
 		$bt = BroadcastType::findFirst("name = 'anime'"));
-		$parameters = array(
-				'typeId' => $bt->getId()
-		);
+		$parameters = array('typeId' => $bt->getId());
 		$BPs = BroadcastProgram::query()
 		->where('type_id = :typeId:')
 		->notInWhere('status_id', $statusD->getId())
@@ -214,11 +212,11 @@ class AnimeController extends BaseController {
 			));
 			$status = Status::findFirst($bp->getStatusId());
 			array_push($output, array(
-					'id' => $a->getId(),
-					'name' => $bp->getName(),
-					'status' => $status->getName(),
-					'createdAt' => $bp->getCreatedAt(),
-					'updatedAt' => $bp->getUpdatedAt()
+				'id' => $a->getId(),
+				'name' => $bp->getName(),
+				'status' => $status->getName(),
+				'createdAt' => $bp->getCreatedAt(),
+				'updatedAt' => $bp->getUpdatedAt()
 			));
 		}
 
@@ -254,11 +252,11 @@ class AnimeController extends BaseController {
 			));
 			$status = Status::findFirst($bp->getStatusId());
 			array_push($output, array(
-					'id' => $a->getId(),
-					'name' => $bp->getName(),
-					'status' => $status->getName(),
-					'createdAt' => $bp->getCreatedAt(),
-					'updatedAt' => $bp->getUpdatedAt()
+				'id' => $a->getId(),
+				'name' => $bp->getName(),
+				'status' => $status->getName(),
+				'createdAt' => $bp->getCreatedAt(),
+				'updatedAt' => $bp->getUpdatedAt()
 			));
 		}
 
