@@ -66,4 +66,52 @@ class MangaChapterController extends BaseController {
 
 		return array('code' => 201, 'content' => $mc->toArray());
 	}
+
+	/**
+	* @param integer $mangaChapterId
+	*/
+	public function update($mangaChapterId) {
+		if (!$this->application->request->isPut()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$mc = MangaChapter::findFirst($mangaChapterId);
+		if (!$mc) {
+			throw new Exception('MangaChapter instance not found', 404);
+		}
+
+		$putData = $this->application->request->getJsonRawBody();
+		if (empty($putData->statusId)) {
+			throw new Exception('Status ID attribute cannot be null', 409);
+		}
+		if (empty($putData->mangaId)) {
+			throw new Exception('Manga ID cannot be null', 409);
+		}
+		if (empty($putData->number)) {
+			throw new Exception('Number field must be filled', 409);
+		}
+		if (empty($putData->summary)) {
+			throw new Exception('Summary field must be filled', 409);
+		}
+		if (empty($putData->content)) {
+			throw new Exception('Content field cannot be empty', 409);
+		}
+
+		$mc->beforeUpdate();
+		$update = $mc->update(array(
+			'status_id' => $putData->statusId,
+			'summary' => $putData->summary,
+			'content' => $putData->content,
+			'number' => $putData->number,
+			'manga_id' => $putData->mangaId
+		));
+		if (!$update) {
+			throw new Exception('MangaChapter instance not updated', 409);
+		}
+
+		return array('code' => 200, 'content' => $mc->toArray());
+	}
 }
