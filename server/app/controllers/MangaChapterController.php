@@ -114,4 +114,34 @@ class MangaChapterController extends BaseController {
 
 		return array('code' => 200, 'content' => $mc->toArray());
 	}
+
+	/**
+	* @param integer $mangaChapterId
+	*/
+	public function delete($mangaChapterId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$mc = MangaChapter::findFirst($mangaChapterId);
+		if (!$mc) {
+			throw new Exception('MangaChapter instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		if ($mc->getStatusId() == $statusD->getId()) {
+			throw new Exception('MangaChapter instance already deleted', 409);
+		}
+
+		$mc->beforeUpdate();
+		$delete = $mc->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('MangaChapter instance not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'MangaChapter instance deleted');
+	}
 }
