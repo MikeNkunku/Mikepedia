@@ -172,27 +172,13 @@ class Production extends Model {
 	 * @return timestamp
 	 */
 	public function getCreatedAt() {
-		return $this->created_at;
-	}
-
-	/**
-	 * @param timestamp $createdAt
-	 */
-	public function setCreatedAt($createdAt) {
-		$this->created_at = $createdAt;
+		return date('Y-m-d H:i:sP', $this->created_at);
 	}
 
 	/**
 	 * @return timestamp
 	 */
 	public function getUpdatedAt() {
-		return $this->updated_at;
-	}
-
-	/**
-	 * @param timestamp $updatedAt
-	 */
-	public function setUpdatedAt($updatedAt) {
-		$this->updated_at = $updatedAt;
+		return date('Y-m-d H:i:sP', $this->updated_at);
 	}
 }
