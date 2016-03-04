@@ -69,19 +69,6 @@ class Song extends Model {
 	}
 
 	/**
-	 * @return boolean
-	 */
-	public function delete() {
-		$s = Status::findFirst(array('name' => 'deleted'));
-		$delete = $this->update(array(
-				'status_id' => $s->getId(),
-				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
-		));
-
-		return $delete ? true : false;
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getId() {
