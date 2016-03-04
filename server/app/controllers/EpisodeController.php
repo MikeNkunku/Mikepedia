@@ -66,11 +66,11 @@ class EpisodeController extends BaseController {
 			$episode->setAiredAt(date_create_from_format('Y-m-d', $postData->airedAt, new \DateTimeZone('UTC')));
 		}
 		$create = $episode->create(array(
-				'status_id' => $postData->statusId,
-				'season_id' => $postData->seasonId,
-				'number' => $postData->number,
-				'summary' => $postData->summary,
-				'description' => $postData->description
+			'status_id' => $postData->statusId,
+			'season_id' => $postData->seasonId,
+			'number' => $postData->number,
+			'summary' => $postData->summary,
+			'description' => $postData->description
 		));
 
 		if (!$create) {
@@ -125,11 +125,11 @@ class EpisodeController extends BaseController {
 			$episode->setAiredAt(date_create_from_format('Y-m-d', $putData->airedAt, new \DateTimeZone('UTC')));
 		}
 		$update = $episode->update(array(
-				'status_id' => $putData->statusId,
-				'summary' => $putData->summary,
-				'description' => $putData->description,
-				'number' => $putData->number,
-				'season_id' => $putData->seasonId
+			'status_id' => $putData->statusId,
+			'summary' => $putData->summary,
+			'description' => $putData->description,
+			'number' => $putData->number,
+			'season_id' => $putData->seasonId
 		));
 		if (!$update) {
 			throw new Exception('Episode not updated', 409);
@@ -187,13 +187,13 @@ class EpisodeController extends BaseController {
 			$bp = BroadcastProgram::findFirst($season->getProgramId());
 			$status = Status::findFirst($e->getStatusId());
 			array_push($output, array(
-					'id' => $e->getId(),
-					'number' => $e->getNumber(),
-					'status' => $status->getName(),
-					'seasonNumber' => $season->getNumber(),
-					'programName' => $bp->getName(),
-					'createdAt' => date('Y-m-d H:i:sP', $e->getCreatedAt()),
-					'updatedAt' => date('Y-m-d H:i:sP', $e->getUpdatedAt())
+				'id' => $e->getId(),
+				'number' => $e->getNumber(),
+				'status' => $status->getName(),
+				'seasonNumber' => $season->getNumber(),
+				'programName' => $bp->getName(),
+				'createdAt' => $e->getCreatedAt(),
+				'updatedAt' => $e->getUpdatedAt()
 			));
 		}
 
@@ -224,13 +224,13 @@ class EpisodeController extends BaseController {
 			$bp = BroadcastProgram::findFirst($season->getProgramId());
 			$status = Status::findFirst($e->getStatusId());
 			array_push($output, array(
-					'id' => $e->getId(),
-					'number' => $e->getNumber(),
-					'status' => $status->getName(),
-					'seasonNumber' => $season->getNumber(),
-					'programName' => $bp->getName(),
-					'createdAt' => date('Y-m-d H:i:sP', $e->getCreatedAt()),
-					'updatedAt' => date('Y-m-d H:i:sP', $e->getUpdatedAt())
+				'id' => $e->getId(),
+				'number' => $e->getNumber(),
+				'status' => $status->getName(),
+				'seasonNumber' => $season->getNumber(),
+				'programName' => $bp->getName(),
+				'createdAt' => $e->getCreatedAt(),
+				'updatedAt' => $e->getUpdatedAt()
 			));
 		}
 
@@ -271,13 +271,12 @@ class EpisodeController extends BaseController {
 			$season = Season::findFirst($e->getSeasonId());
 			$bp = BroadcastProgram::findFirst($season->getProgramId());
 			array_push($output, array(
-					'id' => $e->getId(),
-					'number' => $e->getNumber(),
-					// 'status' => $status->getName(),
-					'seasonNumber' => $season->getNumber(),
-					'programName' => $bp->getName(),
-					'createdAt' => date('Y-m-d H:i:sP', $e->getCreatedAt()),
-					'updatedAt' => date('Y-m-d H:i:sP', $e->getUpdatedAt())
+				'id' => $e->getId(),
+				'number' => $e->getNumber(),
+				'seasonNumber' => $season->getNumber(),
+				'programName' => $bp->getName(),
+				'createdAt' => $e->getCreatedAt(),
+				'updatedAt' => $e->getUpdatedAt()
 			));
 		}
 
