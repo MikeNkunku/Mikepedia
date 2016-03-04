@@ -30,8 +30,6 @@ class EpisodeController extends BaseController {
 		$info = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
 
 		$eArr = $episode->toArray();
-		$eArr['created_at'] = date('Y-m-d H:i:sP', $eArr['created_at']);
-		$eArr['updated_at'] = date('Y-m-d H:i:sP', $eArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($eArr, $info));
 	}
@@ -84,8 +82,6 @@ class EpisodeController extends BaseController {
 		$info  = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
 
 		$eArr = $episode->toArray();
-		$eArr['created_at'] = date('Y-m-d H:i:sP', $eArr['created_at']);
-		$eArr['updated_at'] = date('Y-m-d H:i:sP', $eArr['updated_at']);
 
 		return array('code' => 201, 'content' => array_merge($eArr, $info));
 	}
@@ -144,8 +140,6 @@ class EpisodeController extends BaseController {
 		$info = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
 
 		$eArr = $episode->toArray();
-		$eArr['created_at'] = date('Y-m-d H:i:sP', $eArr['created_at']);
-		$eArr['updated_at'] = date('Y-m-d H:i:sP', $eArr['updated_at']);
 
 		return array('code' => 200, 'content' => array_merge($eArr, $info));
 	}
@@ -168,10 +162,8 @@ class EpisodeController extends BaseController {
 		}
 
 		$statusD = Status::findFirst("name = 'deleted'"));
-		$update = $episode->update(array(
-				'status_id' => $statusD->getId(),
-				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
-		));
+		$episode->beforeUpdate();
+		$update = $episode->update(array('status_id' => $statusD->getId()));
 		if (!$update) {
 			throw new Exception('Episode not deleted', 409);
 		}
