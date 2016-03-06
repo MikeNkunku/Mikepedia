@@ -175,4 +175,31 @@ class MangaChapterController extends BaseController {
 
 		return array('code' => 200, 'content' => $MCs->toArray());
 	}
+
+	/**
+	* @param text $statusName
+	*/
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statuses = Status::find();
+		$stNames = $statuses->toArray('name');
+		if (!in_array($statusName, $stNames)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$status = Status::findFirst(array('conditions' => "name = :name:", 'bind' => array('name' => $statusName)));
+		$MCs = MangaChapter::find(array('conditions' => 'status_id = :id:', 'bind' => array('id' => $status->getId())));
+		if (!$MCs) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		if ($MCs->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching MangaChapter instance found');
+		}
+
+		return array('code' => 200, 'content' => $MCs->toArray());
+	}
 }
