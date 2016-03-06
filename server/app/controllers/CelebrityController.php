@@ -141,17 +141,16 @@ class CelebrityController extends BaseController {
 		if (empty($putData->picture)) {
 			throw new Exception('Picture field must be filled', 409);
 		}
+		if (empty($putData->earlyLife)) {
+			throw new Exception('EarlyLife field must not be empty', 409);
+		}
 
 		$update = $c->beforeUpdate($putData);
 		if (!$update) {
 			throw new Exception('Parent class not updated', 409);
 		}
 
-		if (empty($putData->earlyLife)) {
-			throw new Exception('EarlyLife field must not be empty', 409);
-		}
 		$update = $c->update(array('early_life' => $putData->earlyLife));
-
 		if (!$update) {
 			throw new Exception('Celebrity not updated', 409);
 		}
