@@ -196,4 +196,31 @@ class MangaCharacterController extends BaseController {
 
 		return array('code' => 204, 'content' => 'MangaCharacter instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$MCs = MangaCharacter::find(array(
+			'order' => 'id ASC',
+			'group' => 'manga_id'
+		));
+		if (!$MCs) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($MCs->count() == 0) {
+			return array('code' => 204, 'content' => 'No MangaCharacter instance in database');
+		}
+
+		$output = array();
+		foreach ($MCs as $mc) {
+			$p = Person::findFirst($mc->getPersonId());
+			$pArr = $p->toArray();
+			unset($pArr['id']);
+			array_push($output, array_merge($mc->toArray(), $pArr));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
