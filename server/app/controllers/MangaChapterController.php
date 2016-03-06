@@ -157,4 +157,22 @@ class MangaChapterController extends BaseController {
 
 		return array('code' => 200, 'content' => $MCs->toArray());
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$MCs = MangaChapter::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('id ASC')
+		->groupBy('manga_id ASC')
+		->execute();
+		if (!$MCs) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		return array('code' => 200, 'content' => $MCs->toArray());
+	}
 }
