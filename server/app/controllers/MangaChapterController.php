@@ -144,4 +144,17 @@ class MangaChapterController extends BaseController {
 
 		return array('code' => 204, 'content' => 'MangaChapter instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$MCs = MangaChapter::find(array('order' => 'id ASC', 'group' = >'manga_id'));
+		if (!$MCs) {
+			throw new Exception('Query not executed', 409);
+		}
+
+		return array('code' => 200, 'content' => $MCs->toArray());
+	}
 }
