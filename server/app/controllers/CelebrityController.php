@@ -74,15 +74,16 @@ class CelebrityController extends BaseController {
 		if (empty($postData->picture)) {
 			throw new Exception('Picture field must be filled', 409);
 		}
+		if (empty($postData->earlyLife)) {
+			throw new Exception('EarlyLife field must not be empty', 409);
+		}
+
 		$c = new Celebrity();
 		$pId = $c->beforeCreate($postData);
 		if (!$pId) {
 			throw new Exception('Parent class not created', 409);
 		}
 
-		if (empty($postData->earlyLife)) {
-			throw new Exception('EarlyLife field must not be empty', 409);
-		}
 		$create = $c->create(array(
 			'person_id' => $pId,
 			'early_life' => $postData->early_life
