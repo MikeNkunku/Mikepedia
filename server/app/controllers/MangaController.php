@@ -6,6 +6,7 @@ use Phalcon\Exception;
 
 use BaseController;
 use Models\Manga;
+use Models\MangaChapter;
 use Models\MangaGenre;
 use Models\MangaPublic;
 use Models\Status;
@@ -271,5 +272,29 @@ class MangaController extends BaseController {
 		}
 
 		return array('code' => 200, 'content' => $output);
+	}
+
+	/**
+	* @param integer $mangaId
+	*/
+	public function getChapters($mangaId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$manga = Manga::findFirst($mangaId);
+		if (!$manga) {
+			throw new Exception('Manga instance not found', 404);
+		}
+
+		$MCs = MangaChapter::find(array('conditions' => "manga_id = :id:", 'bind' => array('id' => $mangaId)));
+		if (!$MCs) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($MCs->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching MangaChapter instance found');
+		}
+
+		return array('code' => 200, 'content' => $MCs->toArray());
 	}
 }
