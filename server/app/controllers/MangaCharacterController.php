@@ -163,4 +163,37 @@ class MangaCharacterController extends BaseController {
 
 		return array('code' => 200, 'content' => array_merge($mc->toArray(), $pArr));
 	}
+
+	/**
+	* @param integer $mangaCharacterId
+	*/
+	public function delete($mangaCharacterId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$mc = MangaCharacter::findFirst($mangaCharacterId);
+		if (!$mc) {
+			throw new Exception('MangaCharacter instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$p = Person::findFirst($mc->getPersonId());
+		if ($p->getStatusId() == $statusD->getId()) {
+			throw new Exception('MangaCharacter instance already deleted', 409);
+		}
+
+		$delete = $p->update(array(
+			'status_id' => $statusD->getId(),
+			'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
+		));
+		if (!$delete) {
+			throw new Exception('MangaCharacter instance not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'MangaCharacter instance deleted');
+	}
 }
