@@ -93,4 +93,5 @@ class MangaCharacterController extends BaseController {
 		unset($pArr['id']);
 
 		return array('code' => 201, 'content' => array_merge($mc->toArray(), $pArr));
+	}
 }
