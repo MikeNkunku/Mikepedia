@@ -173,6 +173,10 @@ class MangaChapterController extends BaseController {
 			throw new Exception('Query not executed', 409);
 		}
 
+		if ($MCs->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching MangaChapter instance found');
+		}
+
 		return array('code' => 200, 'content' => $MCs->toArray());
 	}
 
