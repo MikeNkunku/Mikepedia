@@ -61,7 +61,7 @@ class MangaCharacter extends Person {
 				'summary' => $postData->summary,
 				'biography' => $postData->biography,
 				'created_at' => new \Datetime('now', new \DateTimeZone('UTC')),
-				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
+				'updated_at' => new \Datetime('now', new \Dat eTimeZone('UTC'))
 		));
 
 		return $create ? $p->getId() : false;
@@ -88,17 +88,6 @@ class MangaCharacter extends Person {
 		));
 
 		return $update ? true : false;
-	}
-
-	public function delete() {
-		$p = Person::findFirst($this->getPersonId());
-		$s = Status::findFirst(array('name' => 'deleted'));
-		$delete = $p->update(array(
-				'status_id' => $s->getId(),
-				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
-		));
-
-		return $delete ? true : false;
 	}
 
 	/**
