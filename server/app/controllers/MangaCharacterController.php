@@ -268,10 +268,7 @@ class MangaCharacterController extends BaseController {
 			throw new Exception('Invalid parameter', 409);
 		}
 
-		$status = Status::findFirst(array(
-			'conditions' => "name = :name:",
-			'bind' => array('name' => $statusName)
-		));
+		$status = Status::findFirst(array('conditions' => "name = :name:", 'bind' => array('name' => $statusName)));
 		$MCs = MangaCharacter::find(array(
 			'conditions' => "status_id = :id:",
 			'bind' => array('id' => $status->getId())
