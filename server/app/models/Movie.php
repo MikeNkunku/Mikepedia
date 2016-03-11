@@ -3,7 +3,6 @@
 namespace Models;
 
 use Phalcon\Mvc\Model;
-use Status;
 
 class Movie extends Model {
 	/**
