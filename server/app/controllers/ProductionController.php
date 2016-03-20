@@ -188,4 +188,35 @@ class ProductionController extends BaseController {
 
 		return array('code' => 200, 'content' => $productions->toArray());
 	}
+
+	/**
+	* @param text $statusName
+	*/
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statuses = Status::find();
+		$statusesArr = $statuses->toArray('name');
+		if (!in_array($statusName, $statusesArr)) {
+			throw new Exception('Invalid parameter', 400);
+		}
+
+		$status = Status::findFirst(array('conditions' => 'name = :name:', 'bind' => array('name' => $statusName)));
+		$productions = Production::find(array(
+			'conditions' => 'status_id = :id:',
+			'bind' => array('id' => $status->getId()),
+			'order' => 'name ASC',
+			'group' => 'artist_id'
+		));
+		if (!$productions) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($productions->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Production instance found');
+		}
+
+		return array('code' => 200, 'content' => $productions->toArray());
+	}
 }
