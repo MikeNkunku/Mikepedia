@@ -195,4 +195,34 @@ class MovieController extends BaseController {
 
 		return array('code' => 200, 'content' => $movies->toArray());
 	}
+
+	/**
+	* @param text $statusName
+	*/
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statuses = Status::find();
+		$statusesArr = $statuses->toArray('name');
+		if (!in_array($statusName, $statusesArr)) {
+			throw new Exception('Invalid parameter', 405);
+		}
+
+		$status = Status::findFirst(array('conditions' => 'name = :name:', 'bind' => array('name' => $statusName)));
+		$movies = Movie::find(array(
+			'conditions' => 'status_id = :id:',
+			'bind' => array('id' => $status->getId()),
+			'order' => 'name' 
+		));
+		if (!$movies) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($movies->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Movie instance found');
+		}
+
+		return array('code' => 200, 'content' => $movies->toArray());
+	}
 }
