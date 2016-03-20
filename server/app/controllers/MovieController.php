@@ -129,4 +129,50 @@ class MovieController extends BaseController {
 
 		return array('code' => 200, 'content' => $movie->toArray());
 	}
+
+	/**
+	* @param integer $movieId
+	*/
+	public function delete($movieId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$movie = Movie::findFirst($movieId);
+		if (!$movie) {
+			throw new Exception('Movie instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		if ($movie->getStatusId() == $statusD->getId()) {
+			throw new Exception('Movie instance already deleted', 409);
+		}
+
+		$movie->beforeUpdate();
+		$delete = $movie->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('Movie instance not deleted', 409);
+		}
+
+		return array('code' => 204, 'content' => 'Movie instance deleted');
+	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$movies =  Movie::find(array('order' => 'created_at ASC'));
+		if (!$movies) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($movies->count() == 0) {
+			return array('code' => 204, 'content' => 'No Movie instance present in database');
+		}
+
+		return array('code' => 200, 'content' => $movies->toArray());
+	}
 }
