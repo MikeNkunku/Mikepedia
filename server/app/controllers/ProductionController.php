@@ -151,4 +151,20 @@ class ProductionController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Production instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$productions = Production::find(array('order' => 'updated_at DESC'));
+		if (!$productions) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($productions->count() == 0) {
+			return array('code' => 204, 'content' => 'No Production instance in database');
+		}
+
+		return array('code' => 200, 'content' => $productions->toArray());
+	}
 }
