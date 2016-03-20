@@ -175,4 +175,24 @@ class MovieController extends BaseController {
 
 		return array('code' => 200, 'content' => $movies->toArray());
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$movies = Movie::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('updated_at DESC')
+		->execute();
+		if (!$movies) {
+			throw new Exception('Query not executed', 409);
+		}
+		if ($movies->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Movie instance found');
+		}
+
+		return array('code' => 200, 'content' => $movies->toArray());
+	}
 }
