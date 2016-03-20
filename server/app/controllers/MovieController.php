@@ -73,4 +73,60 @@ class MovieController extends BaseController {
 
 		return array('code' => 201, 'content' => $movie->toArray());
 	}
+
+	/**
+	* @param integer $movieId
+	*/
+	public function update() {
+		if (!$this->application->request->isPut()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$movie = Movie::findFirst($movieId);
+		if (!$movie) {
+			throw new Exception('Movie instance not found', 404);
+		}
+
+		$putData = $this->application->request->getJsonRawBody();
+		if (empty($putData->statusId)) {
+			throw new Exception('Status ID field cannot be null', 409);
+		}
+		if (empty($putData->name)) {
+			throw new Exception('A movie must have a name', 409);
+		}
+		if (empty($putData->producerId)) {
+			throw new Exception('Producer ID cannot be null', 409);
+		}
+		if (empty($putData->releaseDate)) {
+			throw new Exception('Release date field must be filled', 409);
+		}
+		if (empty($putData->summary)) {
+			throw new Exception('Summary field must be filled', 409);
+		}
+		if (empty($putData->description)) {
+			throw new Exception('Description field cannot be empty', 409);
+		}
+		if (empty($putData->genres)) {
+			throw new Exception('A movie must at lease belong to one genre', 409);
+		}
+
+		$movie->beforeUpdate();
+		$update = $movie->create(array(
+			'status_id'	=> $putData->statusId,
+			'name' => $putData->name,
+			'producer_id' => $putData->producerId,
+			'release_date' => $putData->releaseDate,
+			'summary' => $putData->summary,
+			'description' => $putData->description,
+			'genres' => $putData->genres
+		));
+		if (!$update) {
+			throw new Exception('Movie instance not updated', 409);
+		}
+
+		return array('code' => 200, 'content' => $movie->toArray());
+	}
 }
