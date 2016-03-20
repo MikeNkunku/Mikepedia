@@ -121,4 +121,34 @@ class ProductionController extends BaseController {
 
 		return array('code' => 200, 'content' => $production->toArray());
 	}
+
+	/**
+	* @param integer $productionId
+	*/
+	public function delete($productionId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$production = Production::findFirst($productionId);
+		if (!$production) {
+			throw new Exception('Production instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		if ($production->getStatusId() == $statusD->getId()) {
+			throw new Exception('Production instance already deleted', 409);
+		}
+
+		$production->beforeUpdate();
+		$delete = $production->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('Production instance not deleted', 500);
+		}
+
+		return array('code' => 204, 'content' => 'Production instance deleted');
+	}
 }
