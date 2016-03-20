@@ -167,4 +167,25 @@ class ProductionController extends BaseController {
 
 		return array('code' => 200, 'content' => $productions->toArray());
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$productions = Production::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('name ASC')
+		->groupBy('artist_id')
+		->execute();
+		if (!$productions) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($productions->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Production instance found');
+		}
+
+		return array('code' => 200, 'content' => $productions->toArray());
+	}
 }
