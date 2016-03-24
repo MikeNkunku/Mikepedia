@@ -19,6 +19,11 @@ class Song extends Model {
 	/**
 	 * @var integer
 	 */
+	protected $number;
+
+	/**
+	 * @var integer
+	 */
 	protected $genre_id;
 
 	/**
@@ -87,6 +92,20 @@ class Song extends Model {
 	 */
 	public function setProductionid($productionId) {
 		$this->production_id = $productionId;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getNumber() {
+		return $this->number;
+	}
+
+	/**
+	 * @param integer $number
+	 */
+	public function setNumber($number) {
+		$this->number = $number;
 	}
 
 	/**
