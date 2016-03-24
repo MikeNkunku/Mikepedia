@@ -154,4 +154,23 @@ class SeasonController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Season instance deleted');
 	}
+
+	public function getAll() {
+		if ($this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$seasons = Season::find(array(
+			'order' => 'number ASC',
+			'group' => 'program_id'
+		));
+		if (!$seasons) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($seasons->count() == 0) {
+			return array('code' => 204, 'content' => 'No Season instance found in database');
+		}
+
+		return array('code' => 204, 'content' => $seasons->toArray());
+	}
 }
