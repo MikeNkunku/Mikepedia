@@ -71,4 +71,57 @@ class SeasonController extends BaseController {
 
 		return array('code' => 201, 'content' => $season->toArray());
 	}
+
+	/**
+	 * @param integer $seasonId
+	 */
+	public function update($seasonId) {
+		if (!$this->application->request->isPut()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$season = Season::findFirst($seasonId);
+		if (!$season) {
+			throw new Exception('Season instance not found', 404);
+		}
+
+		$putData = $this->application->request->getJsonRawBody();
+		if (empty($putData->typeId)) {
+			throw new Exception('Type ID field cannot be null', 409);
+		}
+		if (empty($putData->programId)) {
+			throw new Exception('Program ID field cannot be null', 409);
+		}
+		if (empty($putData->number)) {
+			throw new Exception('Number field must not be null', 409);
+		}
+		if (empty($putData->startDate)) {
+			throw new Exception('Start date field must not be null', 409);
+		}
+		if (empty($putData->summary)) {
+			throw new Exception('Number field must not be null', 409);
+		}
+		if (empty($putData->statusId)) {
+			throw new Exception('Status ID field cannot be null', 409);
+		}
+
+		$season->beforeUpdate();
+		empty($putData->endDate) ? $season->setEndDate($putData->endDate) : $putData->setEndDate(null);
+		$update = $season->update(array(
+			'type_id' => $putData->typeId,
+			'status_id' => $putData->statusId,
+			'program_id' => $putData->programId,
+			'number' => $putData->number,
+			'start_date' => $putData->startDate,
+			'summary' => $putData->summary
+		));
+		if (!$update) {
+			throw new Exception('Query not executed', 500);
+		}
+
+		return array('code' => 200, 'content' => $season->toArray());
+	}
 }
