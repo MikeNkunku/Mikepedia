@@ -7,6 +7,7 @@ use Phalcon\Exception;
 use BaseController;
 use Models\Status;
 use Models\Production;
+use Models\Song;
 
 class ProductionController extends BaseController {
 	/**
@@ -218,5 +219,33 @@ class ProductionController extends BaseController {
 		}
 
 		return array('code' => 200, 'content' => $productions->toArray());
+	}
+
+	/**
+	* @param integer $productionId
+	*/
+	public function getSongs($productionId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$production = Production::findFirst($productionId);
+		if (!$production) {
+			throw new Exception('Production instance not found', 404);
+		}
+
+		$songs = Song::find(array(
+			'conditions' => 'production_id = :pId:',
+			'bind' => array('pId' => $productionId),
+			'order' => 'number ASC'
+		));
+		if (!$songs) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($songs->count() == 0) {
+			return array('code' => 204, 'content' => 'No Song instance found for this Production instance');
+		}
+
+		return array('code' => 200, 'content' => $songs->toArray());
 	}
 }
