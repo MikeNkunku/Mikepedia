@@ -173,4 +173,25 @@ class SeasonController extends BaseController {
 
 		return array('code' => 204, 'content' => $seasons->toArray());
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$seasons = Season::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('number ASC')
+		->groupBy('program_id')
+		->execute();
+		if (!$seasons) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($seasons->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Season instance found');
+		}
+
+		return array('code' => 200, 'content' => $seasons->toArray());
+	}
 }
