@@ -171,7 +171,7 @@ class SeasonController extends BaseController {
 			return array('code' => 204, 'content' => 'No Season instance found in database');
 		}
 
-		return array('code' => 204, 'content' => $seasons->toArray());
+		return array('code' => 200, 'content' => $seasons->toArray());
 	}
 
 	public function getValidList() {
