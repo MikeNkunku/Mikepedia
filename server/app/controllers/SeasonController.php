@@ -225,4 +225,32 @@ class SeasonController extends BaseController {
 
 		return array('code' => 200, 'content' => $seasons->toArray());	
 	}
+
+	/**
+	 * @param integer $seasonId
+	 */
+	public function getEpisodes() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$season = Season::findFirst($seasonId);
+		if (!$season) {
+			throw new Exception('Season instance not found', 404);
+		}
+
+		$episodes = Episode::find(array(
+			'conditions' => 'season_id = :id:',
+			'bind' => array('id' => $seasonId),
+			'order' => 'number ASC'
+		));
+		if (!$episodes) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($episodes->count() == 0) {
+			return array('code' => 204, 'content' => 'No Episode instance found for this Season instance');
+		}
+
+		return array('code' => 200, 'content' => $episodes->toArray());
+	}
 }
