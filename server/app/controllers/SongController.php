@@ -142,4 +142,23 @@ class SongController extends BaseController {
 
 		return array('code' => 204, 'content' => 'Song instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$songs = Song::find(array(
+			'order' => 'number ASC',
+			'group' => 'production_id'
+		));
+		if (!$songs) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($songs->count() == 0) {
+			return array('code' => 204, 'content' => 'No Song instance found in database');
+		}
+
+		return array('code' => 200, 'content' => $songs->toArray());
+	}
 }
