@@ -112,4 +112,34 @@ class SongController extends BaseController {
 
 		return array('code' => 200, 'content' => $song->toArray());
 	}
+
+	/**
+	 * @param integer $songId
+	 */
+	public function delete($songId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$song = Song::findFirst($songId);
+		if (!$song) {
+			throw new Exception('Song instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		if ($song->getStatusId() == $statusD->getId()) {
+			throw new Exception('Song instance already deleted', 409);
+		}
+
+		$song->beforeUpdate();
+		$delete = $song->update(array('status_id' => $statusD->getId()));
+		if (!$delete) {
+			throw new Exception('Song instance not deleted', 500);
+		}
+
+		return array('code' => 204, 'content' => 'Song instance deleted');
+	}
 }
