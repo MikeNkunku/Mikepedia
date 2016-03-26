@@ -29,7 +29,7 @@ class Song extends Model {
 	/**
 	 * @var text
 	 */
-	protected $name;
+	protected $title;
 
 	/**
 	 * @var integer
@@ -111,15 +111,15 @@ class Song extends Model {
 	/**
 	 * @return text
 	 */
-	public function getName() {
-		return $this->name;
+	public function getTitle() {
+		return $this->title;
 	}
 
 	/**
-	 * @param text $name
+	 * @param text $title
 	 */
-	public function setName($name) {
-		$this->name = $name;
+	public function setTitle($title) {
+		$this->title = $title;
 	}
 
 	/**
