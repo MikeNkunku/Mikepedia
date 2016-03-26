@@ -161,4 +161,25 @@ class SongController extends BaseController {
 
 		return array('code' => 200, 'content' => $songs->toArray());
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$songs = Song::query()
+		->notInWhere('status_id', $statusD->getId())
+		->order('number ASC')
+		->groupBy('production_id')
+		->execute();
+		if (!$songs) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($songs->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Song instance found');
+		}
+
+		return array('code' => 200, 'content' => $songs->toArray());
+	}
 }
