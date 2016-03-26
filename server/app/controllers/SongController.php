@@ -25,4 +25,44 @@ class SongController extends BaseController {
 
 		return array('code' => 200, 'content' => $song->toArray());
 	}
+
+	public function add() {
+		if (!$this->application->request->isPost()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$postData = $this->application->request->getJsonRawBody();
+		if (empty($postData->productionId)) {
+			throw new Exception('Production ID attribute cannot be null', 409);
+		}
+		if (empty($postData->genreId)) {
+			throw new Exception('Status ID attribute cannot be null', 409);
+		}
+		if (empty($postData->title)) {
+			throw new Exception('Song instance must have a non-empty title', 409);
+		}
+		if (empty($postData->statusId)) {
+			throw new Exception('Status ID attribute cannot be null', 409);
+		}
+
+		$song = new Song();
+		$song->beforeCreate();
+		if (!empty($postData->number)) {
+			$song->setNumber($postData->number);
+		}
+		$create = $song->create(array(
+			'production_id' => $postData->productionId,
+			'genre_id' => $postData->genreId,
+			'title' => $postData->title,
+			'status_id' => $postData->statusId
+		));
+		if (!$create) {
+			throw new Exception('Song instance not created', 500);
+		}
+
+		return array('code' => 201, 'content' => $song->toArray());
+	}
 }
