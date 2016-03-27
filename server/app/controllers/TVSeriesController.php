@@ -171,4 +171,22 @@ class TVSeriesController extends BaseController {
 
 		return array('code' => 204, 'content' => 'TVSeries instance deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$output = array();
+		$tvSeries = TVSeries::find(array('order' => 'id ASC'));
+		foreach ($tvS as $tvSeries) {
+			$bp = BroadcastProgram::findFirst($tvS->getBroadcastProgramId());
+			$bpArr = $bp->toArray();
+			unset($bpArr['id']);
+
+			array_push($output, array_merge($bpArr, $tvS->toArray()));
+		}
+
+		return array('code' => 200, 'content' => $output);
+	}
 }
