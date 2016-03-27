@@ -7,6 +7,7 @@ use Phalcon\Exception;
 use BaseController;
 use Models\BroadcastProgram;
 use Models\TVSeries;
+use Models\Season;
 use Models\Status;
 
 class TVSeriesController extends BaseController {
@@ -240,5 +241,33 @@ class TVSeriesController extends BaseController {
 		}
 
 		return array('code' => 200, 'content' => $tvSeries->toArray());
+	}
+
+	/**
+	 * @param integer $tvseriesId
+	 */
+	public function getSeasons($tvseriesId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$tvSeries = TVSeries::findFirst($tvseriesId);
+		if (!$tvSeries) {
+			throw new Exception('TVSeries instance not found', 404);
+		}
+
+		$seasons = Season::find(array(
+			'conditions' => 'program_id = :id',
+			'bind' => array('id' => $tvSeries->getBroadcastProgramId()),
+			'order' => 'number ASC'
+		));
+		if (!$seasons) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($seasons->count() == 0) {
+			return array('code' => 204, 'content' => 'No Season instance found in database');
+		}
+
+		return array('code' => 200, 'content' => $seasons->toArray());
 	}
 }
