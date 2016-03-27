@@ -80,18 +80,6 @@ class TVSeries extends BroadcastProgram {
 	}
 
 	/**
-	 * @return boolean
-	 */
-	public function delete() {
-		$bp = BroadcastProgram::findFirst($this->getBroadcastProgramId());
-		$s = Status::findFirst(array('name' => 'deleted'));
-		$delete = $bp->update(array(
-				'status_id' => $s->getId(),
-				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
-		));
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getId() {
