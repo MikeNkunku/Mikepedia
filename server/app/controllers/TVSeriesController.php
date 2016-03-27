@@ -189,4 +189,25 @@ class TVSeriesController extends BaseController {
 
 		return array('code' => 200, 'content' => $output);
 	}
+
+	public function getValidList() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$tvSeries = TVSeries::query()
+		->leftJoin('Models\BroadcastProgram', 'Models\TVSeries.broadcast_program_id = bp.id', 'bp')
+		->notInWhere('status_id', $statusD->getId())
+		->order('id ASC')
+		->execute();
+		if (!tvSeries) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($tvSeries->count() == 0) {
+			return ('code' => 204, 'content' => 'No matching TVSeries instance found');
+		}
+
+		return array('code' => 200, 'content' => $tvSeries->toArray());
+	}
 }
