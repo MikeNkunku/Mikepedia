@@ -7,7 +7,7 @@ use BaseController;
 use Models\BroadcastProgram;
 use Models\BroadcastType;
 use Models\Anime;
-use Models\Episodes;
+use Models\Season;
 use Models\Status;
 
 class AnimeController extends BaseController {
@@ -236,5 +236,33 @@ class AnimeController extends BaseController {
 		}
 
 		return array('code' => 200, 'content' => $animes->toArray());
+	}
+
+	/**
+	 * @param integer $animeId
+	 */
+	public function getSeasons($animeId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$anime = Anime::findFirst($animeId);
+		if (!$anime) {
+			throw new Exception('Anime instance not found', 404);
+		}
+
+		$seasons = Season::find(array(
+			'conditions' => 'program_id = :id:',
+			'bind' => array('id' => $anime->getBroadcastProgramId()),
+			'order' => 'number ASC'
+		));
+		if (!$seasons) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($seasons->count() == 0) {
+			return array('code' => 204, 'content' => 'No Season instance found');
+		}
+
+		return array('code' => 200, 'content' => $seasons->toArray());
 	}
 }
