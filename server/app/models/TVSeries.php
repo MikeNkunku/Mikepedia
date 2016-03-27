@@ -42,11 +42,13 @@ class TVSeries extends BroadcastProgram {
 	 */
 	public function beforeCreate($postData) {
 		$bp = new BroadcastProgram();
+		if (!empty($postData->endDate)) {
+			$bp->setEndDate(date($postData->endDate, 'Y-m-d'));
+		}
 		$create = $bp->create(array(
 				'type_id'=> $postData->typeId,
 				'name' => $postData->name,
 				'start_date' => date($postData->startDate, 'Y-m-d'),
-				'end_date' => date($postData->endDate, 'Y-m-d'),
 				'summary' => $postData->summary,
 				'status_id'=> $postData->statusId,
 				'created_at' => new \Datetime('now', new \DateTimeZone('UTC')),
@@ -62,11 +64,13 @@ class TVSeries extends BroadcastProgram {
 	 */
 	public function beforeUpdate($putData) {
 		$bp = BroadcastProgram::findFirst($this->getBroadcastProgramId());
+		if (!empty($putData->endDate)) {
+			$bp->setEndDate(date($putData->endDate, 'Y-m-d'));
+		}
 		$update = $bp->update(array(
 				'type_id'=> $putData->typeId,
 				'name' => $putData->name,
 				'start_date' => date($putData->startDate, 'Y-m-d'),
-				'end_date' => date($putData->endDate, 'Y-m-d'),
 				'summary' => $putData->summary,
 				'status_id'=> $putData->statusId,
 				'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
