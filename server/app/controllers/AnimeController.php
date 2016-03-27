@@ -125,10 +125,10 @@ class AnimeController extends BaseController {
 	 */
 	public function update($animeId) {
 		if (!$this->application->request->isPut()) {
-			throw new Exception('Method not allowed', 401);
+			throw new Exception('Method not allowed', 405);
 		}
 		if (!$this->isAllowed()) {
-			throw new Exception('User not authorized', 405);
+			throw new Exception('User not authorized', 401);
 		}
 
 		$anime = Anime::findFirst($animeId);
