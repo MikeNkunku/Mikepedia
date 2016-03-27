@@ -33,4 +33,53 @@ class TVSeriesController extends BaseController {
 
 		return array('code' => 200, 'content' => array_merge($tvSeries->toArray(), $bpArr));
 	}
+
+	public function add() {
+		if (!$this->application->request->isPost()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$postData = $this->application->request->getJsonRawBody();
+		if (empty($postData->typeId)) {
+			throw new Exception('Type ID field cannot be null', 409);
+		}
+		if (empty($posData->name)) {
+			throw new Exception('Name field must be filled', 409);
+		}
+		if (empty($posData->startDate)) {
+			throw new Exception('Name field must be filled', 409);
+		}
+		if (empty($posData->summary)) {
+			throw new Exception('Name field must be filled', 409);
+		}
+		if (empty($postData->statusId)) {
+			throw new Exception('Status ID field cannot be null', 409);
+		}
+
+		$tvSeries = new TVSeries();
+		$bpId = $tvSeries->beforeCreate();
+		if (!$bpId) {
+			throw new Exception('Parent class not created', 500);
+		}
+
+		if (empty($postData->mainCast)) {
+			throw new Exception('Main cast field must be filled', 409);
+		}
+		$create = $tvSeries->create(array(
+			'broadcast_program_id' => $bpId,
+			'main_cast' => $postData->mainCast
+		));
+		if (!$create) {
+			throw new Exception('TVSeries instance not created', 500);
+		}
+
+		$bp = BroadcastProgram::findFirst($bpId);
+		$bpArr = $bp->toArray();
+		unset($bpArr['id']);
+
+		return array('code' => 201, 'content' => array_merge($tvSeries->toArray(), $bpArr));
+	}
 }
