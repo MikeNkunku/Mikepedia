@@ -213,38 +213,28 @@ class AnimeController extends BaseController {
 	 */
 	public function getList($statusName) {
 		if (!$this->application->request->isGet()) {
-			throw new Exception('Method not allowed', 401);
+			throw new Exception('Method not allowed', 405);
 		}
 
 		$statuses = Status::find(array('columns' => 'name'));
 		$sArr = $statuses->toArray();
 		if (!in_array($statusName, $sArr)) {
-			throw new Exception('Unvalid parameter', 409);
+			throw new Exception('Invalid parameter', 400);
 		}
 
-		$output = array();
-		$status = Status::findFirst(array('name' => $statusName));
-		$bt = BroadcastType::findFirst(array('name' => 'anime'));
-		$BPs = BroadcastProgram::find(array(
-				'status_id' => $status->getId(),
-				'type_id' => $bt->getId(),
-				'order' => 'id ASC'
-		));
-		foreach($BPs as $bp) {
-			$a = Anime::findFirst(array(
-				'conditions' => "broadcast_program_id = ?1",
-				'bind' => array(1 => $bp->getId())
-			));
-			$status = Status::findFirst($bp->getStatusId());
-			array_push($output, array(
-				'id' => $a->getId(),
-				'name' => $bp->getName(),
-				'status' => $status->getName(),
-				'createdAt' => $bp->getCreatedAt(),
-				'updatedAt' => $bp->getUpdatedAt()
-			));
+		$status = Status::findFirst(array('conditions' => 'name = :name:', 'bind' => array('name' => $statusName)));
+		$animes = Anime::query()
+		->leftJoin('Models\BroadcastProgram', 'Models\Anime.broadcast_program_id = bp.id', 'bp')
+		->where('status_id = :id:', array('id' => $status->getId()))
+		->orderBy('bp.name ASC')
+		->execute();
+		if (!$animes) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($animes->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Anime instance found');
 		}
 
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $animes->toArray());
 	}
 }
