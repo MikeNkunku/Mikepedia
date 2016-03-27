@@ -46,13 +46,13 @@ class TVSeriesController extends BaseController {
 		if (empty($postData->typeId)) {
 			throw new Exception('Type ID field cannot be null', 409);
 		}
-		if (empty($posData->name)) {
+		if (empty($postData->name)) {
 			throw new Exception('Name field must be filled', 409);
 		}
-		if (empty($posData->startDate)) {
+		if (empty($postData->startDate)) {
 			throw new Exception('Name field must be filled', 409);
 		}
-		if (empty($posData->summary)) {
+		if (empty($postData->summary)) {
 			throw new Exception('Name field must be filled', 409);
 		}
 		if (empty($postData->statusId)) {
