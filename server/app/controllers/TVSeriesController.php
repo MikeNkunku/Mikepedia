@@ -202,7 +202,7 @@ class TVSeriesController extends BaseController {
 		->notInWhere('status_id', $statusD->getId())
 		->order('id ASC')
 		->execute();
-		if (!tvSeries) {
+		if (!$tvSeries) {
 			throw new Exception('Query not executed', 500);
 		}
 		if ($tvSeries->count() == 0) {
