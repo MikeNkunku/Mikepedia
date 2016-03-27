@@ -28,11 +28,6 @@ class AnimeController extends BaseController {
 			throw new Exception('BroadcastProgram not found', 404);
 		}
 
-		$statusD = Status::findFirst("name = 'deleted'"));
-		if ($bp->getStatusId() == $statusD->getId()) {
-			throw new Exception('Anime is deleted', 409);
-		}
-
 		$bpArr = $bp->toArray();
 		unset($bpArr['id']);
 
