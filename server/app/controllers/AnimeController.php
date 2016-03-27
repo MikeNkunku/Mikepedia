@@ -170,24 +170,21 @@ class AnimeController extends BaseController {
 
 	public function getAll() {
 		if (!$this->application->request->isGet()) {
-			throw new Exception('Method not allowed', 401);
+			throw new Exception('Method not allowed', 405);
 		}
 
-		$output = array();
-		$animes = Anime::find(array('order' => 'id ASC'));
-		foreach($animes as $a) {
-			$bp = BroadcastProgram::findFirst($a->getBroadcastProgramId());
-			$status = Status::findFirst($bp->getStatusId());
-			array_push($output, array(
-				'id' => $a->getId(),
-				'name' => $bp->getName(),
-				'status' => $status->getName(),
-				'createdAt' => $bp->getCreatedAt(),
-				'updatedAt' => $bp->getUpdatedAt()
-			));
+		$animes = Anime::query()
+		->leftJoin('Models\BroadcastProgram', 'Models\Anime.broadcast_program_id = bp.id', 'bp')
+		->orderBy('bp.name ASC')
+		->execute();
+		if (!$animes) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($animes->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Anime instance found');
 		}
 
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $animes->toArray());
 	}
 
 	public function getValidList() {
