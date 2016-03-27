@@ -138,4 +138,37 @@ class TVSeriesController extends BaseController {
 
 		return array('code' => 200, 'content' => array_merge($tvSeries->toArray(), $bpArr));
 	}
+
+	/**
+	 * @param integer $tvseriesId
+	 */
+	public function delete($tvseriesId) {
+		if (!$this->application->request->isDelete()) {
+			throw new Exception('Method not allowed', 405);
+		}
+		if (!$this->isAllowed()) {
+			throw new Exception('User not authorized', 401);
+		}
+
+		$tvSeries = TVSeries::findFirst($tvseriesId);
+		if (!$tvSeries) {
+			throw new Exception('TVSeries instance not found', 404);
+		}
+
+		$statusD = Status::findFirst("name = 'deleted'");
+		$bp = BroadcastProgram::findFirst($tvSeries->getBroadcastProgramId());
+		if ($bp->getStatusId() == $statusD->getId()) {
+			throw new Exception('TVSeries instance already deleted', 409);
+		}
+
+		$delete = $bp->update(array(
+			'status_id' => $statusD->getId(),
+			'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
+		));
+		if (!$delete) {
+			throw new Exception('TVSeries instance not deleted', 500);
+		}
+
+		return array('code' => 204, 'content' => 'TVSeries instance deleted');
+	}
 }
