@@ -177,17 +177,18 @@ class TVSeriesController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$output = array();
-		$tvSeries = TVSeries::find(array('order' => 'id ASC'));
-		foreach ($tvS as $tvSeries) {
-			$bp = BroadcastProgram::findFirst($tvS->getBroadcastProgramId());
-			$bpArr = $bp->toArray();
-			unset($bpArr['id']);
-
-			array_push($output, array_merge($bpArr, $tvS->toArray()));
+		$tvSeries = TVSeries::query()
+		->leftJoin('Models\BroadcastProgram', 'Models\TVSeries.broadcast_program_id = bp.id', 'bp')
+		->order('id ASC')
+		->execute();
+		if (!$tvSeries) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($tvSeries->count() == 0) {
+			return ('code' => 204, 'content' => 'No TVSeries instance found in database');
 		}
 
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $tvSeries->toArray());
 	}
 
 	public function getValidList() {
