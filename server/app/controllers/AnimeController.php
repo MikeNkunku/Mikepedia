@@ -181,7 +181,7 @@ class AnimeController extends BaseController {
 			throw new Exception('Query not executed', 500);
 		}
 		if ($animes->count() == 0) {
-			return array('code' => 204, 'content' => 'No matching Anime instance found');
+			return array('code' => 204, 'content' => 'No Anime instance found in database');
 		}
 
 		return array('code' => 200, 'content' => $animes->toArray());
