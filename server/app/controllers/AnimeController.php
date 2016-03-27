@@ -189,38 +189,23 @@ class AnimeController extends BaseController {
 
 	public function getValidList() {
 		if (!$this->application->request->isGet()) {
-			throw new Exception('Method not allowed', 401);
+			throw new Exception('Method not allowed', 405);
 		}
 
 		$statusD = Status::findFirst("name = 'deleted'"));
-		$bt = BroadcastType::findFirst("name = 'anime'"));
-		$parameters = array('typeId' => $bt->getId());
-		$BPs = BroadcastProgram::query()
-		->where('type_id = :typeId:')
+		$animes = Anime::query()
+		->leftJoin('Models\BroadcastProgram', 'Models\Anime.broadcast_program_id = bp.id', 'bp')
 		->notInWhere('status_id', $statusD->getId())
-		->bind($parameters)
+		->orderBy('bp.name ASC')
 		->execute();
-		if (!$BPs) {
-			throw new Exception('Query not executed', 409);
+		if (!$animes) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($animes->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Anime instance found');
 		}
 
-		$output = array();
-		foreach($BPs as $bp) {
-			$a = Anime::findFirst(array(
-				'conditions' => "broadcast_program_id = ?1",
-				'bind' => array(1 => $bp->getId())
-			));
-			$status = Status::findFirst($bp->getStatusId());
-			array_push($output, array(
-				'id' => $a->getId(),
-				'name' => $bp->getName(),
-				'status' => $status->getName(),
-				'createdAt' => $bp->getCreatedAt(),
-				'updatedAt' => $bp->getUpdatedAt()
-			));
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $animes->toArray());
 	}
 
 	/**
