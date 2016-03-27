@@ -7,6 +7,7 @@ use BaseController;
 use Models\BroadcastProgram;
 use Models\BroadcastType;
 use Models\Anime;
+use Models\Episodes;
 use Models\Status;
 
 class AnimeController extends BaseController {
@@ -38,7 +39,6 @@ class AnimeController extends BaseController {
 		if (!$this->application->request->isPost()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
@@ -66,7 +66,7 @@ class AnimeController extends BaseController {
 		$anime = new Anime();
 		$bpId = $anime->beforeCreate($postData);
 		if (!$bpId) {
-			throw new Exception('Parent class not created', 409);
+			throw new Exception('Parent class not created', 500);
 		}
 
 		if (empty($postData->mangaId)) {
@@ -77,7 +77,7 @@ class AnimeController extends BaseController {
 			'manga_id' => $postData->mangaId
 		));
 		if (!$create) {
-			throw new Exception('Anime not created', 409);
+			throw new Exception('Anime instance not created', 500);
 		}
 
 		$bp = BroadcastProgram::findFirst($bpId);
