@@ -120,13 +120,20 @@ class AnimeController extends BaseController {
 		return array('code' => 204, 'content' => 'Anime instance deleted');
 	}
 
-	public function update() {
+	/**
+	 * @param integer $animeId
+	 */
+	public function update($animeId) {
 		if (!$this->application->request->isPut()) {
 			throw new Exception('Method not allowed', 401);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 405);
+		}
+
+		$anime = Anime::findFirst($animeId);
+		if (!$anime) {
+			throw new Exception('Anime instance not found', 404);
 		}
 
 		$putData = $this->application->request->getJsonRawBody();
@@ -149,10 +156,9 @@ class AnimeController extends BaseController {
 			throw new Exception('Status ID field must not be null', 400);
 		}
 
-		$anime = Anime::findFirst($putData->id);
 		$bpId = $anime->beforeUpdate($putData);
 		if (!$bpId) {
-			throw new Exception('Parent class not updated', 409);
+			throw new Exception('Parent class not updated', 500);
 		}
 
 		$bp = BroadcastProgram::findFirst($bpId);
