@@ -211,4 +211,34 @@ class TVSeriesController extends BaseController {
 
 		return array('code' => 200, 'content' => $tvSeries->toArray());
 	}
+
+	/**
+	 * @param text $statusName
+	 */
+	public function getList($statusName) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$statuses = Status::find();
+		$statusesArr = $statuses->toArray('name');
+		if (!in_array($statusName, $statusesArr)) {
+			throw new Exception('Invalid parameter', 409);
+		}
+
+		$status = Status::findFirst(array('conditions' => 'name = :name:', 'bind' => array('name' => $statusName)));
+		$tvSeries = TVSeries::query()
+		->leftJoin('Models\BroadcastProgram', 'Models\TVSeries.broadcast_program_id = bp.id', 'bp')
+		->where('status_id = :id:', array('id' => $status->getId()))
+		->order('name ASC')
+		->execute();
+		if (!$tvSeries) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($tvSeries->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching TVSeries instance found');
+		}
+
+		return array('code' => 200, 'content' => $tvSeries->toArray());
+	}
 }
