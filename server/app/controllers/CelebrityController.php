@@ -161,7 +161,6 @@ class CelebrityController extends BaseController {
 		if (!$this->application->request->isDelete()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
@@ -172,12 +171,15 @@ class CelebrityController extends BaseController {
 			throw new Exception('Celebrity already deleted', 409);
 		}
 
-		$delete = $p->update(array('status_id' => $statusD->getId()));
+		$delete = $p->update(array(
+			'status_id' => $statusD->getId(),
+			'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
+		));
 		if (!$delete) {
-			throw new Exception('Celebrity not deleted', 409);
+			throw new Exception('Celebrity not deleted', 500);
 		}
 
-		return array('code' => 204, 'content' => 'Celebrity deleted');
+		return array('code' => 204, 'content' => 'Celebrity instance deleted');
 	}
 
 	public function getAll() {
