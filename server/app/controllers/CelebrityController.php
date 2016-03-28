@@ -187,22 +187,18 @@ class CelebrityController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$celebrities = Celebrity::find();
-		$output = array();
-		foreach ($celebrities as $c) {
-			$p = Person::findFirst($c->getPersonId());
-			$s = Status::findFirst($p->getStatusId());
-			array_push($output, array(
-				'id' => $c->getId(),
-				'firstname' => $p->getFirstname(),
-				'lastname' => $p->getLastname(),
-				'status' => $s->getName(),
-				'created_at' => $p->getCreatedAt(),
-				'updated_at' => $p->getUpdatedAt()
-			));
+		$celebrities = Celebrity::query()
+		->leftJoin('Models\Person', 'Models\Celebrity.person_id = p.id', 'p')
+		->orderBy('p.firstname ASC, p.lastname ASC')
+		->execute();
+		if (!$celebrities) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($celebrities->count() == 0) {
+			return array('code' => 204, 'content' => 'No Celebrity instance found in database');
 		}
 
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $celebrities->toArray());
 	}
 
 	public function getValidList() {
