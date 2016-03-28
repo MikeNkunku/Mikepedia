@@ -99,7 +99,6 @@ class CelebrityController extends BaseController {
 		if (!$this->application->request->isPut()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
@@ -111,41 +110,41 @@ class CelebrityController extends BaseController {
 
 		$putData = $this->application->request->getJsonRawBody();
 		if (empty($putData->statusId)) {
-			throw new Exception('Status ID field must not be empty', 409);
+			throw new Exception('Status ID field must not be empty', 400);
 		}
 		if (empty($putData->firstname)) {
-			throw new Exception('Firstname field cannot be empty', 409);
+			throw new Exception('Firstname field cannot be empty', 400);
 		}
 		if (empty($putData->lastname)) {
-			throw new Exception('Lastname field cannot be empty', 409);
+			throw new Exception('Lastname field cannot be empty', 400);
 		}
 		if (empty($putData->gender)) {
-			throw new Exception('Gender field must not be empty', 409);
+			throw new Exception('Gender field must not be empty', 400);
 		}
 		if (empty($putData->birthdate)) {
-			throw new Exception('Birthdate field must not be empty', 409);
+			throw new Exception('Birthdate field must not be empty', 400);
 		}
 		if (empty($putData->summary)) {
-			throw new Exception('Summary field must not be empty', 409);
+			throw new Exception('Summary field must not be empty', 400);
 		}
 		if (empty($putData->biography)) {
-			throw new Exception('Biography field cannot be empty', 409);
+			throw new Exception('Biography field cannot be empty', 400);
 		}
 		if (empty($putData->picture)) {
-			throw new Exception('Picture field must be filled', 409);
+			throw new Exception('Picture field must be filled', 400);
 		}
 		if (empty($putData->earlyLife)) {
-			throw new Exception('EarlyLife field must not be empty', 409);
+			throw new Exception('EarlyLife field must not be empty', 400);
 		}
 
 		$update = $c->beforeUpdate($putData);
 		if (!$update) {
-			throw new Exception('Parent class not updated', 409);
+			throw new Exception('Parent class not updated', 500);
 		}
 
 		$update = $c->update(array('early_life' => $putData->earlyLife));
 		if (!$update) {
-			throw new Exception('Celebrity not updated', 409);
+			throw new Exception('Celebrity instance not updated', 500);
 		}
 
 		$p = Person::findFirst($c->getPersonId());
