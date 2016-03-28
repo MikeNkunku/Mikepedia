@@ -15,6 +15,9 @@ $celebrityCollection->delete('/{celebrityId:[0-9]+}', 'delete');
 
 $celebrityCollection->get('/all', 'getAll');
 $celebrityCollection->get('/list', 'getValidList');
-$celebrityCollection->post('/list/{statusName:[a-z]+}', 'getList');
+$celebrityCollection->get('/list/{statusName:[a-z]+}', 'getList');
+
+$celebrityCollection->get('/{celebrityId:[0-9]+}/movies', 'getMovies');
+$celebrityCollection->get('/{celebrityId:[0-9]+}/productions', 'getProductions');
 
 return $celebrityCollection;
