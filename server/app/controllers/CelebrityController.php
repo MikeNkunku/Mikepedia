@@ -38,44 +38,43 @@ class CelebrityController extends BaseController {
 		if (!$this->application->request->isPost()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$postData = $this->application->request->getJsonRawBody();
 		if (empty($postData->statusId)) {
-			throw new Exception('Status ID field must not be empty', 409);
+			throw new Exception('Status ID field must not be empty', 400);
 		}
 		if (empty($postData->firstname)) {
-			throw new Exception('Firstname field cannot be empty', 409);
+			throw new Exception('Firstname field cannot be empty', 400);
 		}
 		if (empty($postData->lastname)) {
-			throw new Exception('Lastname field cannot be empty', 409);
+			throw new Exception('Lastname field cannot be empty', 400);
 		}
 		if (empty($postData->gender)) {
-			throw new Exception('Gender field must not be empty', 409);
+			throw new Exception('Gender field must not be empty', 400);
 		}
 		if (empty($postData->birthdate)) {
-			throw new Exception('Birthdate field must not be empty', 409);
+			throw new Exception('Birthdate field must not be empty', 400);
 		}
 		if (empty($postData->summary)) {
-			throw new Exception('Summary field must not be empty', 409);
+			throw new Exception('Summary field must not be empty', 400);
 		}
 		if (empty($postData->biography)) {
-			throw new Exception('Biography field cannot be empty', 409);
+			throw new Exception('Biography field cannot be empty', 400);
 		}
 		if (empty($postData->picture)) {
-			throw new Exception('Picture field must be filled', 409);
+			throw new Exception('Picture field must be filled', 400);
 		}
 		if (empty($postData->earlyLife)) {
-			throw new Exception('EarlyLife field must not be empty', 409);
+			throw new Exception('EarlyLife field must not be empty', 400);
 		}
 
 		$c = new Celebrity();
 		$pId = $c->beforeCreate($postData);
 		if (!$pId) {
-			throw new Exception('Parent class not created', 409);
+			throw new Exception('Parent class not created', 500);
 		}
 
 		$create = $c->create(array(
@@ -83,7 +82,7 @@ class CelebrityController extends BaseController {
 			'early_life' => $postData->early_life
 		));
 		if (!$create) {
-			throw new Exception('Celebrity instance not created', 409);
+			throw new Exception('Celebrity instance not created', 500);
 		}
 
 		$p = Person::findFirst($pId);
