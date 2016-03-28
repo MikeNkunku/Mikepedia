@@ -281,4 +281,32 @@ class CelebrityController extends BaseController {
 
 		return array('code' => 200, 'content' => $movies->toArray());
 	}
+
+	/**
+	 * @param integer $celebrityId
+	 */
+	public function getProductions($celebrityId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$celebrity = Celebrity::findFirst($celebrityId);
+		if (!$celebrity) {
+			throw new Exception('Celebrity instance not found', 404);
+		}
+
+		$productions = Production::find(array(
+			'conditions' => 'artist_id = :id:',
+			'bind' => array('id' => $celebrityId),
+			'order' => 'release_date DESC, name ASC'
+		));
+		if (!$productions) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($productions->count() == 0) {
+			return array('code' => 200, 'content' => 'No matching Production instance found');
+		}
+
+		return array('code' => 200, 'content' => $productions->toArray());
+	}
 }
