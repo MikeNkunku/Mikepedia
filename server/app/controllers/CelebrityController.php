@@ -18,20 +18,14 @@ class CelebrityController extends BaseController {
 		if (!$this->application->request->isGet()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		$c = Celebrity::findFirst($celebrityId);
 		if (!$c) {
-			throw new Exception('Celebrity not found', 404);
+			throw new Exception('Celebrity instance not found', 404);
 		}
 
 		$p = Person::findFirst($c->getPersonId());
 		if (!$p) {
 			throw new Exception('Parent class not found', 404);
-		}
-
-		$statusD = Status::findFirst("name = 'deleted'"));
-		if ($p->getStatusId() == $statusD->getId()) {
-			throw new Exception('Celebrity is deleted', 409);
 		}
 
 		$pArr = $p->toArray();
