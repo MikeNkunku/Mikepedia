@@ -2,9 +2,8 @@
 
 namespace Controllers;
 
-use Models\BroadcastProgram;
-
 use Phalcon\Exception;
+
 use BaseController;
 use Models\Episode;
 use Models\Season;
@@ -25,13 +24,7 @@ class EpisodeController extends BaseController {
 			throw new Exception('Episode not found', 404);
 		}
 
-		$season = Season::findFirst($episode->getSeasonId());
-		$BP = BroadcastProgram::findFirst($season->getProgramId());
-		$info = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
-
-		$eArr = $episode->toArray();
-
-		return array('code' => 200, 'content' => array_merge($eArr, $info));
+		return array('code' => 200, 'content' => $episode->toArray());
 	}
 
 	public function add() {
