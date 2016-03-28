@@ -79,31 +79,30 @@ class EpisodeController extends BaseController {
 		if (!$this->application->request->isPut()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$episode = Episode::findFirst($episodeId);
 		if (!$episode) {
-			throw new Exception('Episode not found', 404);
+			throw new Exception('Episode instance not found', 404);
 		}
 
 		$putData = $this->application->request->getJsonRawBody();
 		if (empty($putData->statusId)) {
-			throw new Exception('Status ID cannot be null', 409);
+			throw new Exception('Status ID cannot be null', 400);
 		}
 		if (empty($putData->seasonId)) {
-			throw new Exception('Season ID cannot be null', 409);
+			throw new Exception('Season ID cannot be null', 400);
 		}
 		if (empty($putData->number)) {
-			throw new Exception('Number must not be empty', 409);
+			throw new Exception('Number must not be empty', 400);
 		}
 		if (empty($putData->summary)) {
-			throw new Exception('Summary field cannot be empty', 409);
+			throw new Exception('Summary field cannot be empty', 400);
 		}
 		if (empty($putData->description)) {
-			throw new Exception('Description field cannot be empty', 409);
+			throw new Exception('Description field cannot be empty', 400);
 		}
 
 		$episode->beforeUpdate();
@@ -118,16 +117,10 @@ class EpisodeController extends BaseController {
 			'season_id' => $putData->seasonId
 		));
 		if (!$update) {
-			throw new Exception('Episode not updated', 409);
+			throw new Exception('Episode not updated', 500);
 		}
 
-		$season = Season::findFirst($episode->getSeasonId());
-		$BP = BroadcastProgram::findFirst($season->getProgramId());
-		$info = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
-
-		$eArr = $episode->toArray();
-
-		return array('code' => 200, 'content' => array_merge($eArr, $info));
+		return array('code' => 200, 'content' => $episode->toArray());
 	}
 
 	/**
