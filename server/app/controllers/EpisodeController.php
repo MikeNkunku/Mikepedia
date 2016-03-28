@@ -21,7 +21,7 @@ class EpisodeController extends BaseController {
 
 		$episode = Episode::findFirst($episodeId);
 		if (!$episode) {
-			throw new Exception('Episode not found', 404);
+			throw new Exception('Episode instance not found', 404);
 		}
 
 		return array('code' => 200, 'content' => $episode->toArray());
