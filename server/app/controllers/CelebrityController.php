@@ -233,25 +233,22 @@ class CelebrityController extends BaseController {
 		$statuses = Status::find();
 		$sArr = $statuses->toArray('name');
 		if (!in_array($statusName, $sArr)) {
-			throw new Exception('Invalid parameter', 409);
+			throw new Exception('Invalid parameter', 400);
 		}
 
-		$celebrities = Celebrity::find();
-		$output = array();
-		foreach ($celebrities as $c) {
-			$p = Person::findFirst($c->getPersonId());
-			$s = Status::findFirst($p->getStatusId());
-			if ($s->getName() == $statusName) {
-				array_push($output, array(
-					'id' => $c->getId(),
-					'firstname' => $p->getFirstname(),
-					'lastname' => $p->getLastname(),
-					'updated_at' => $p->getUpdatedAt(),
-					'created_at' => $p->getCreatedAt(),
-				));
-			}
+		$status = Status::find(array('conditions' => 'name = :name:', 'bind' => array('name' => $statusName)));
+		$celebrities = Celebrity::query()
+		->leftJoin('Models\Person', 'Models\Celebrity.person_id = p.id', 'p')
+		->where('status_id = :id:', array('id' => $status->getId()))
+		->orderBy('p.firstname ASC, p.lastname ASC')
+		->execute();
+		if (!$celebrities) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($celebrities->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Celebrity instance found');
 		}
 
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $celebrities->toArray());
 	}
 }
