@@ -207,37 +207,19 @@ class CelebrityController extends BaseController {
 		}
 
 		$statusD = Status::findFirst("name = 'deleted'"));
-		$pt = PersonType::findFirst("name = 'Celebrity'"));
-		$parameters = array(
-				'typeId' => $pt->getId()
-		);
-		$persons = Person::query()
-		->where('type_id = :typeId:')
+		$celebrities = Celebrity::query()
+		->leftJoin('Models\Person', 'Models\Celebrity.person_id = p.id', 'p')
 		->notInWhere('status_id', $statusD->getId())
-		->bind($parameters)
+		->orderBy('p.firstname ASC, p.lastname ASC')
 		->execute();
-		if (!$persons) {
-			throw new Exception('Query not executed', 409);
+		if (!$celebrities) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($celebrities->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Celebrity instance found');
 		}
 
-		$output = array();
-		foreach($persons as $p) {
-			$c = Celebrity::findFirst(array(
-				'conditions' => "person_id = :id:",
-				'bind' => array('id' => $p->getId())
-			));
-			$status = Status::findFirst($p->getStatusId());
-			array_push($output, array(
-				'id' => $c->getId(),
-				'firstname' => $p->getFirstname(),
-				'lastname' => $p->getLastname(),
-				'status' => $status->getName(),
-				'createdAt' => $p->getCreatedAt(),
-				'updatedAt' => $p->getUpdatedAt()
-			));
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $celebrities->toArray());
 	}
 
 	/**
