@@ -3,7 +3,6 @@
 namespace Models;
 
 use Phalcon\Mvc\Model;
-use Status;
 
 class Episode extends Model {
 	/**
