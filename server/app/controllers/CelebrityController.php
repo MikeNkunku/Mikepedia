@@ -8,6 +8,8 @@ use Phalcon\Exception;
 use BaseController;
 use Models\Celebrity;
 use Models\Person;
+use Models\Movie;
+use Models\Production;
 use Models\Status;
 
 class CelebrityController extends BaseController {
@@ -250,5 +252,33 @@ class CelebrityController extends BaseController {
 		}
 
 		return array('code' => 200, 'content' => $celebrities->toArray());
+	}
+
+	/**
+	 * @param integer $celebrityId
+	 */
+	public function getMovies($celebrityId) {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$celebrity = Celebrity::findFirst($celebrityId);
+		if (!$celebrity) {
+			throw new Exception('Celebrity instance not found', 404);
+		}
+
+		$movies = Movie::find(array(
+			'conditions' => 'producer_id = :id:',
+			'bind' => array('id' => $celebrityId),
+			'order' => 'release_date DESC'
+		));
+		if (!$movies) {
+			throw new Exception('Query not executed', 500);
+		}
+		if ($movies->count() == 0) {
+			return array('code' => 204, 'content' => 'No matching Movie instance found');
+		}
+
+		return array('code' => 200, 'content' => $movies->toArray());
 	}
 }
