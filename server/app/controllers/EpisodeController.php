@@ -31,26 +31,25 @@ class EpisodeController extends BaseController {
 		if (!$this->application->request->isPost()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$postData = $this->application->request->getJsonRawBody();
 		if (empty($postData->statusId)) {
-			throw new Exception('Status ID cannot be null', 409);
+			throw new Exception('Status ID cannot be null', 400);
 		}
 		if (empty($postData->seasonId)) {
-			throw new Exception('Season ID cannot be null', 409);
+			throw new Exception('Season ID cannot be null', 400);
 		}
 		if (empty($postData->number)) {
-			throw new Exception('Number must not be empty', 409);
+			throw new Exception('Number must not be empty', 400);
 		}
 		if (empty($postData->summary)) {
-			throw new Exception('Summary field cannot be empty', 409);
+			throw new Exception('Summary field cannot be empty', 400);
 		}
 		if (empty($postData->description)) {
-			throw new Exception('Description field cannot be empty', 409);
+			throw new Exception('Description field cannot be empty', 400);
 		}
 
 		$episode = new Episode();
@@ -58,6 +57,7 @@ class EpisodeController extends BaseController {
 		if (!empty($postData->airedAt)) {
 			$episode->setAiredAt(date_create_from_format('Y-m-d', $postData->airedAt, new \DateTimeZone('UTC')));
 		}
+
 		$create = $episode->create(array(
 			'status_id' => $postData->statusId,
 			'season_id' => $postData->seasonId,
@@ -65,18 +65,11 @@ class EpisodeController extends BaseController {
 			'summary' => $postData->summary,
 			'description' => $postData->description
 		));
-
 		if (!$create) {
-			throw new Exception('Episode not created', 409);
+			throw new Exception('Episode instance not created', 500);
 		}
 
-		$season = Season::findFirst($episode->getSeasonId());
-		$BP = BroadcastProgram::findFirst($season->getProgramId());
-		$info  = array('seasonNumber' => $season->getNumber(), 'programName' => $BP->getName());
-
-		$eArr = $episode->toArray();
-
-		return array('code' => 201, 'content' => array_merge($eArr, $info));
+		return array('code' => 201, 'content' => $episode->toArray());
 	}
 
 	/**
