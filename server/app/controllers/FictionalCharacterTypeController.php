@@ -31,26 +31,20 @@ class FictionalCharacterTypeController extends BaseController {
 		if (!$this->application->request->isPost()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$postData = $this->application->request->getJsonRawBody();
-
-		$fct = FictionalCharacterType::findFirst(array(
-			'conditions' => "name = :name:",
-			'bind' => array('name' => $postData->name)
-		));
+		$fct = FictionalCharacterType::findFirst(array('conditions' => "name = :name:", 'bind' => array('name' => $postData->name)));
 		if ($fct) {
-			throw new Exception('FictionalCharacterType already created', 409);
+			throw new Exception('FictionalCharacterType instance already created', 409);
 		}
 
 		$fct = new FictionalCharacterType();
 		$create = $fct->create(array('name' => $postData->name));
-
 		if (!$create) {
-			throw new Exception('FictionalCharacterType not created', 409);
+			throw new Exception('FictionalCharacterType instance not created', 500);
 		}
 
 		return array('code' => 201, 'content' => $fct->toArray());
