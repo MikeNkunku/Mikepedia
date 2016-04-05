@@ -13,5 +13,6 @@ $fictionalCharacterTypeCollection->setPrefix('/api/fictionalcharactertypes');
 $fictionalCharacterTypeCollection->get('/{fictionalCharacterTypeId:[0-9]+}', 'get');
 $fictionalCharacterTypeCollection->post('/', 'add');
 $fictionalCharacterTypeCollection->delete('/{fictionalCharacterTypeId:[0-9]+}', 'delete');
+$fictionalCharacterTypeCollection->get('/all', 'getAll');
 
 return $fictionalCharacterTypeCollection;
