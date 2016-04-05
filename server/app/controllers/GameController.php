@@ -32,49 +32,45 @@ class GameController extends BaseController {
 		if (!$this->application->request->isPost()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$postData = $this->application->request->getJsonRawBody();
 		if (empty($postData->title)) {
-			throw new Exception('Title cannot be null', 409);
+			throw new Exception('Title cannot be null', 400);
 		}
 		if (empty($postData->statusId)) {
-			throw new Exception('Status ID cannot be null', 409);
+			throw new Exception('Status ID cannot be null', 400);
 		}
 		if (empty($postData->platforms)) {
-			throw new Exception('Since when a game can be played without platform?', 409);
+			throw new Exception('Since when a game can be played without platform?', 400);
 		}
 		if (empty($postData->genres)) {
-			throw new Exception('The game belongs to at least one genre', 409);
+			throw new Exception('The game belongs to at least one genre', 400);
 		}
 		if (empty($postData->releaseYear)) {
-			throw new Exception('Release year field must be filled', 409);
+			throw new Exception('Release year field must be filled', 400);
 		}
 		if (empty($postData->summary)) {
-			throw new Exception('Summary field cannot be empty', 409);
+			throw new Exception('Summary field cannot be empty', 400);
 		}
+
 		$game = new Game();
 		$game->beforeCreate();
 		$create = $game->create(array(
-				'title' => $postData->title,
-				'summary' => $postData->summary,
-				'genres' => $postData->genres,
-				'platforms' => $postData->platforms,
-				'release_year' => $postData->releaseYear,
-				'status_id' => $postData->statusId
+			'title' => $postData->title,
+			'summary' => $postData->summary,
+			'genres' => $postData->genres,
+			'platforms' => $postData->platforms,
+			'release_year' => $postData->releaseYear,
+			'status_id' => $postData->statusId
 		));
 		if (!$create) {
-			throw new Exception('Game not created', 409);
+			throw new Exception('Game instance not created', 500);
 		}
 
-		$gArr = $game->toArray();
-		$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-		$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
-
-		return array('code' => 201, 'content' => $gArr;
+		return array('code' => 201, 'content' => $game->toArray());
 	}
 
 	/**
