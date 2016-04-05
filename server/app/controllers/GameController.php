@@ -80,52 +80,49 @@ class GameController extends BaseController {
 		if (!$this->application->request->isPut()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$game = Game::findFirst($gameId);
 		if (!$game) {
-			throw new Exception('Game not found', 404);
+			throw new Exception('Game instance not found', 404);
 		}
 
 		$putData = $this->application->request->getJsonRawBody();
 		if (empty($putData->title)) {
-			throw new Exception('Title cannot be null', 409);
+			throw new Exception('Title cannot be null', 400);
 		}
 		if (empty($putData->statusId)) {
-			throw new Exception('Status ID cannot be null', 409);
+			throw new Exception('Status ID cannot be null', 400);
 		}
 		if (empty($putData->platforms)) {
-			throw new Exception('Since when a game can be played without platform?', 409);
+			throw new Exception('Since when a game can be played without platform?', 400);
 		}
 		if (empty($putData->genres)) {
-			throw new Exception('The game belongs to at least one genre', 409);
+			throw new Exception('The game belongs to at least one genre', 400);
 		}
 		if (empty($putData->releaseYear)) {
-			throw new Exception('Release year field must be filled', 409);
+			throw new Exception('Release year field must be filled', 400);
 		}
 		if (empty($putData->summary)) {
-			throw new Exception('Summary field cannot be empty', 409);
+			throw new Exception('Summary field cannot be empty', 400);
 		}
+
+		$game->beforeUpdate();
 		$update = $game->update(array(
-				'title' => $putData->title,
-				'summary' => $putData->summary,
-				'genres' => $putData->genres,
-				'platforms' => $putData->platforms,
-				'release_year' => $putData->releaseYear,
-				'status_id' => $putData->statusId
+			'title' => $putData->title,
+			'summary' => $putData->summary,
+			'genres' => $putData->genres,
+			'platforms' => $putData->platforms,
+			'release_year' => $putData->releaseYear,
+			'status_id' => $putData->statusId
 		));
 		if (!$update) {
-			throw new Exception('Game not updated', 409);
+			throw new Exception('Game instance not updated', 500);
 		}
 
-		$gArr = $game->toArray();
-		$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-		$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
-
-		return array('code' => 200, 'content' => $gArr);
+		return array('code' => 200, 'content' => $game->toArray());
 	}
 
 	/**
