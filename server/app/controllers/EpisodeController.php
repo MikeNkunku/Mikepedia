@@ -155,28 +155,15 @@ class EpisodeController extends BaseController {
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$episodes = Episode::find(array('order' => 'id'));
+		$episodes = Episode::find(array('order' => 'id ASC'));
+		if (!$episodes) {
+			throw new Exception('Query not executed', 500);
+		}
 		if ($episodes->count() == 0) {
-			return array('code' => 200, 'content' => 'No episode instance in database');
+			return array('code' => 204, 'content' => 'No Episode instance found in database');
 		}
 
-		$output = array();
-		foreach ($episodes as $e) {
-			$season = Season::findFirst($e->getSeasonId());
-			$bp = BroadcastProgram::findFirst($season->getProgramId());
-			$status = Status::findFirst($e->getStatusId());
-			array_push($output, array(
-				'id' => $e->getId(),
-				'number' => $e->getNumber(),
-				'status' => $status->getName(),
-				'seasonNumber' => $season->getNumber(),
-				'programName' => $bp->getName(),
-				'createdAt' => $e->getCreatedAt(),
-				'updatedAt' => $e->getUpdatedAt()
-			));
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $episodes->toArray());
 	}
 
 	public function getValidList() {
