@@ -57,21 +57,20 @@ class FictionalCharacterTypeController extends BaseController {
 		if (!$this->application->request->isDelete()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$fct = FictionalCharacterType::findFirst($fictionalCharacterTypeId);
 		if (!$fct) {
-			throw new Exception('FictionalCharacterType not found', 404);
+			throw new Exception('FictionalCharacterType instance not found', 404);
 		}
 
 		if (!$fct->delete()) {
-			throw new Exception('FictionalCharacterType not deleted', 409);
+			throw new Exception('FictionalCharacterType instance not deleted', 500);
 		}
 
-		return array('code' => 204, 'content' => 'FictionalCharacterType deleted');
+		return array('code' => 204, 'content' => 'FictionalCharacterType instance deleted');
 	}
 
 	public function getAll() {
