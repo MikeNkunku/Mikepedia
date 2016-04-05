@@ -22,22 +22,10 @@ class GameController extends BaseController {
 
 		$game = Game::findFirst($gameId);
 		if (!$game) {
-			throw new Exception('Game not found', 404);
+			throw new Exception('Game instance not found', 404);
 		}
 
-		$gameSections = GameSection::find(array(
-				"game_id = :id:",
-				'bind' => array('id' => $game->getId()),
-				'order' => 'id ASC'
-		));
-		$gsArr = $gameSections->toArray('id', 'title', 'summary');
-
-		$gArr = $game->toArray();
-		$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-		$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
-		$gArr['gameSections'] = $gsArr;
-
-		return array('code' => 200, 'content' => $gArr);
+		return array('code' => 200, 'content' => $game->toArray());
 	}
 
 	public function add() {
