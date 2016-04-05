@@ -15,6 +15,6 @@ $episodeCollection->delete('/{episodeId:[0-9]+}', 'delete');
 
 $episodeCollection->get('/all', 'getAll');
 $episodeCollection->get('/list', 'getValidList');
-$episodeCollection->post('/list/{statusName:w+}', 'getList');
+$episodeCollection->post('/list/{statusName:[a-z]+}', 'getList');
 
 return $episodeCollection;
