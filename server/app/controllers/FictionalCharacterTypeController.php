@@ -79,4 +79,17 @@ class FictionalCharacterTypeController extends BaseController {
 
 		return array('code' => 204, 'content' => 'FictionalCharacterType deleted');
 	}
+
+	public function getAll() {
+		if (!$this->application->request->isGet()) {
+			throw new Exception('Method not allowed', 405);
+		}
+
+		$FCtypes = FictionalCharacterType::find(array('order' => 'id ASC'));
+		if (!$FCtypes) {
+			throw new Exception('Query not executed', 500);
+		}
+
+		return array('code' => 200, 'content' => $FCtypes->toArray());
+	}
 }
