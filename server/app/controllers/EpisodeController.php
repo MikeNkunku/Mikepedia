@@ -137,17 +137,17 @@ class EpisodeController extends BaseController {
 
 		$episode = Episode::findFirst($episodeId);
 		if (!$episode) {
-			throw new Exception('Episode not found', 404);
+			throw new Exception('Episode instance not found', 404);
 		}
 
 		$statusD = Status::findFirst("name = 'deleted'"));
 		$episode->beforeUpdate();
 		$update = $episode->update(array('status_id' => $statusD->getId()));
 		if (!$update) {
-			throw new Exception('Episode not deleted', 409);
+			throw new Exception('Episode instance not deleted', 500);
 		}
 
-		return array('code' => 204, 'content' => 'Episode deleted');
+		return array('code' => 204, 'content' => 'Episode instance deleted');
 	}
 
 	public function getAll() {
