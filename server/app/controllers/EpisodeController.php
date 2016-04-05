@@ -187,7 +187,6 @@ class EpisodeController extends BaseController {
 	}
 
 	/**
-	 * Find all episodes which statusID matches the status name passed as argument
 	 * @param text $statusName
 	 */
 	public function getList($statusName) {
@@ -198,37 +197,22 @@ class EpisodeController extends BaseController {
 		$statuses = Status::find();
 		$sArr = $statuses->toArray('name');
 		if (!in_array($statusName, $sArr)) {
-			throw new Exception('Invalid parameter', 409);
+			throw new Exception('Invalid parameter', 400);
 		}
 
-		$status = Status::findFirst(array(
-			'conditions' => "name = :name:",
-			'bind' => array('name' => $statusName)
-		));
+		$status = Status::findFirst(array('conditions' => "name = :name:", 'bind' => array('name' => $statusName)));
 		$episodes = Episode::find(array(
 			'conditions' => "status_id = :id:",
 			'bind' => array('id' => $status->getId()),
-			'order' => 'id'
+			'order' => 'id ASC'
 		));
-
+		if (!$episodes) {
+			throw new Exception('Query not executed', 500);
+		}
 		if ($episodes->count() == 0) {
-			return array('code' => 200, 'content' => 'No matching episode found');
+			return array('code' => 204, 'content' => 'No matching Episode instance found');
 		}
 
-		$output = array();
-		foreach ($episodes as $e) {
-			$season = Season::findFirst($e->getSeasonId());
-			$bp = BroadcastProgram::findFirst($season->getProgramId());
-			array_push($output, array(
-				'id' => $e->getId(),
-				'number' => $e->getNumber(),
-				'seasonNumber' => $season->getNumber(),
-				'programName' => $bp->getName(),
-				'createdAt' => $e->getCreatedAt(),
-				'updatedAt' => $e->getUpdatedAt()
-			));
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $episodes->toArray());
 	}
 }
