@@ -21,7 +21,7 @@ class FictionalCharacterTypeController extends BaseController {
 
 		$fct = FictionalCharacterType::findFirst($fictionalCharacterTypeId);
 		if (!$fct) {
-			throw new Exception('FictionalCharacterType not found', 404);
+			throw new Exception('FictionalCharacterType instance not found', 404);
 		}
 
 		return array('code' => 200, 'content' => $fct->toArray());
