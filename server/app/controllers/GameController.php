@@ -132,31 +132,27 @@ class GameController extends BaseController {
 		if (!$this->application->request->isDelete()) {
 			throw new Exception('Method not allowed', 405);
 		}
-
 		if (!$this->isAllowed()) {
 			throw new Exception('User not authorized', 401);
 		}
 
 		$game = Game::findFirst($gameId);
 		if (!$gameId) {
-			throw new Exception('Game not found', 404);
+			throw new Exception('Game instance not found', 404);
 		}
 
-		$statusD = Status::findFirst(array(
-				'conditions' => "name = :status:",
-				'bind' => array('status' => 'deleted')
-		));
+		$statusD = Status::findFirst(array('conditions' => "name = :status:", 'bind' => array('status' => 'deleted')));
 		if ($statusD->getId() == $game->getStatusId()) {
-			throw new Exception('Game already deleted', 409);
+			throw new Exception('Game instance already deleted', 500);
 		}
 
 		$game->beforeUpdate();
 		$delete = $game->update(array('status_id' => $statusD->getId()));
 		if (!$delete) {
-			throw new Exception('Game not deleted', 409);
+			throw new Exception('Game instance not deleted', 500);
 		}
 
-		return array('code' => 204, 'content' => 'Game deleted');
+		return array('code' => 204, 'content' => 'Game instance deleted');
 	}
 
 	public function getAll() {
