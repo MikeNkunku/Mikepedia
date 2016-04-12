@@ -232,7 +232,7 @@ class GameController extends BaseController {
 		$GGs = GameGenre::find();
 		$ggArr = $GGs->toArray('id');
 		if (!in_array($gameGenreId, $ggArr)) {
-			throw new Exception('Invalid parameter', 409);
+			throw new Exception('Invalid parameter', 400);
 		}
 
 		$games = Game::find();
@@ -251,8 +251,6 @@ class GameController extends BaseController {
 			}
 
 			$gArr = $g->toArray();
-			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
 			$gArr['genres'] = $temp;
 			array_push($output, $gArr);
 		}
