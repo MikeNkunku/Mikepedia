@@ -161,19 +161,14 @@ class GameController extends BaseController {
 		}
 
 		$games = Games::find(array('order' => 'id ASC'));
+		if (!$games) {
+			throw new Exception('Query not executed', 500);
+		}
 		if ($games->count() == 0) {
-			return array('code' => 200, 'content' => 'No games instanciated');
+			return array('code' => 204, 'content' => 'No Game instances found in database');
 		}
 
-		$output = array();
-		foreach($games as $g) {
-			$gArr = $g->toArray();
-			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
-			array_push($output, $gArr);
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $games->toArray());
 	}
 
 	public function getValidList() {
