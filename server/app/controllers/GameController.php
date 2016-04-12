@@ -179,25 +179,16 @@ class GameController extends BaseController {
 		$statusD = Status::findFirst("name = 'deleted'"));
 		$games = Game::query()
 		->notInWhere('status_id', $statusD->getId())
-		->order('release_year DESC')
+		->orderBy('release_year DESC')
 		->execute();
 		if (!$games) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
-
 		if ($games->count() == 0) {
-			return array('code' => 200, 'content' => 'No game in database');
+			return array('code' => 204, 'content' => 'No matching Game instances found');
 		}
 
-		$output = array();
-		foreach($games as $g) {
-			$gArr = $g->toArray();
-			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
-			array_push($output, $gArr);
-		}
-
-		return array('code' => 200, 'content' => $output);
+		return array('code' => 200, 'content' => $games->toArray());
 	}
 
 	/**
