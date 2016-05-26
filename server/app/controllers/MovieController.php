@@ -68,7 +68,7 @@ class MovieController extends BaseController {
 			'genres' => $postData->genres
 		));
 		if (!$create) {
-			throw new Exception('Movie instance not created', 409);
+			throw new Exception('Movie instance not created', 500);
 		}
 
 		return array('code' => 201, 'content' => $movie->toArray());
@@ -124,7 +124,7 @@ class MovieController extends BaseController {
 			'genres' => $putData->genres
 		));
 		if (!$update) {
-			throw new Exception('Movie instance not updated', 409);
+			throw new Exception('Movie instance not updated', 500);
 		}
 
 		return array('code' => 200, 'content' => $movie->toArray());
@@ -154,7 +154,7 @@ class MovieController extends BaseController {
 		$movie->beforeUpdate();
 		$delete = $movie->update(array('status_id' => $statusD->getId()));
 		if (!$delete) {
-			throw new Exception('Movie instance not deleted', 409);
+			throw new Exception('Movie instance not deleted', 500);
 		}
 
 		return array('code' => 204, 'content' => 'Movie instance deleted');
@@ -167,7 +167,7 @@ class MovieController extends BaseController {
 
 		$movies =  Movie::find(array('order' => 'created_at ASC'));
 		if (!$movies) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($movies->count() == 0) {
 			return array('code' => 204, 'content' => 'No Movie instance present in database');
@@ -187,7 +187,7 @@ class MovieController extends BaseController {
 		->order('updated_at DESC')
 		->execute();
 		if (!$movies) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($movies->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching Movie instance found');
@@ -217,7 +217,7 @@ class MovieController extends BaseController {
 			'order' => 'name' 
 		));
 		if (!$movies) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($movies->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching Movie instance found');
