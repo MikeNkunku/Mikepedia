@@ -269,19 +269,19 @@ class GameController extends BaseController {
 		$GPs = GamePlatform::find();
 		$gpIDs = $GPS->toArray('id');
 		if (!in_array($gamePlatformId, $gpIDs)) {
-			throw new Exception('Invalid parameter', 409);
+			throw new Exception('Invalid parameter', 400);
 		}
 
 		$games = Games::find(array(
-				'conditions' => "platforms LIKE ?1",
-				'bind' => array(1 => '%'.$gamePlatformId.'%'),
-				'order' => 'title ASC'
+			'conditions' => "platforms LIKE ?1",
+			'bind' => array(1 => '%'.$gamePlatformId.'%'),
+			'order' => 'title ASC'
 		));
 		if (!$games) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($games->count() == 0) {
-			return array('code' => 200, 'content' => 'No matching game found in database');
+			return array('code' => 204, 'content' => 'No matching Game instance found');
 		}
 
 		$output = array();
@@ -294,8 +294,6 @@ class GameController extends BaseController {
 			}
 			$gArr = $g->toArray();
 			$gArr['platforms'] = $temp;
-			$gArr['created_at'] = date('Y-m-d H:i:sP', $gArr['created_at']);
-			$gArr['updated_at'] = date('Y-m-d H:i:sP', $gArr['updated_at']);
 			array_push($output, $gArr);
 		}
 
