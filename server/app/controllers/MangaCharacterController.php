@@ -76,7 +76,7 @@ class MangaCharacterController extends BaseController {
 		$mc = new MangaCharacter();
 		$pId = $mc->beforeCreate($postData);
 		if (!$pId) {
-			throw new Exception('Parent class not created', 409);
+			throw new Exception('Parent class not created', 500);
 		}
 
 		$create = $mc->create(array(
@@ -85,7 +85,7 @@ class MangaCharacterController extends BaseController {
 			'personality' => $postData->personality
 		));
 		if (!$create) {
-			throw new Exception('MangaCharacter instance not created', 409);
+			throw new Exception('MangaCharacter instance not created', 500);
 		}
 
 		$p = Person::findFirst($pId);
@@ -145,7 +145,7 @@ class MangaCharacterController extends BaseController {
 
 		$preUpdate = $mc->beforeUpdate($putData);
 		if (!$preUpdate) {
-			throw new Exception('Parent class not updated', 409);
+			throw new Exception('Parent class not updated', 500);
 		}
 
 		$update = $mc->update(array(
@@ -154,7 +154,7 @@ class MangaCharacterController extends BaseController {
 			'person_id' => $putData->personId
 		));
 		if (!$update) {
-			throw new Exception('MangaCharacter instance not updated', 409);
+			throw new Exception('MangaCharacter instance not updated', 500);
 		}
 
 		$p = Person::findFirst($mc->getPersonId());
@@ -191,7 +191,7 @@ class MangaCharacterController extends BaseController {
 			'updated_at' => new \Datetime('now', new \DateTimeZone('UTC'))
 		));
 		if (!$delete) {
-			throw new Exception('MangaCharacter instance not deleted', 409);
+			throw new Exception('MangaCharacter instance not deleted', 500);
 		}
 
 		return array('code' => 204, 'content' => 'MangaCharacter instance deleted');
@@ -207,7 +207,7 @@ class MangaCharacterController extends BaseController {
 			'group' => 'manga_id'
 		));
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($MCs->count() == 0) {
 			return array('code' => 204, 'content' => 'No MangaCharacter instance in database');
@@ -237,7 +237,7 @@ class MangaCharacterController extends BaseController {
 		->groupBy('manga_id')
 		->execute();
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($MCs->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching MangaCharacter instance found');
@@ -274,7 +274,7 @@ class MangaCharacterController extends BaseController {
 			'bind' => array('id' => $status->getId())
 		));
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($MCs->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching MangaCharacter instance found');
