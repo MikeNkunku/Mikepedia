@@ -61,7 +61,7 @@ class MangaChapterController extends BaseController {
 			'manga_id' => $postData->mangaId
 		));
 		if (!$create) {
-			throw new Exception('MangaChapter instance not created', 409);
+			throw new Exception('MangaChapter instance not created', 500);
 		}
 
 		return array('code' => 201, 'content' => $mc->toArray());
@@ -109,7 +109,7 @@ class MangaChapterController extends BaseController {
 			'manga_id' => $putData->mangaId
 		));
 		if (!$update) {
-			throw new Exception('MangaChapter instance not updated', 409);
+			throw new Exception('MangaChapter instance not updated', 500);
 		}
 
 		return array('code' => 200, 'content' => $mc->toArray());
@@ -139,7 +139,7 @@ class MangaChapterController extends BaseController {
 		$mc->beforeUpdate();
 		$delete = $mc->update(array('status_id' => $statusD->getId()));
 		if (!$delete) {
-			throw new Exception('MangaChapter instance not deleted', 409);
+			throw new Exception('MangaChapter instance not deleted', 500);
 		}
 
 		return array('code' => 204, 'content' => 'MangaChapter instance deleted');
@@ -152,7 +152,7 @@ class MangaChapterController extends BaseController {
 
 		$MCs = MangaChapter::find(array('order' => 'id ASC', 'group' = >'manga_id'));
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 
 		if ($MCs->count() == 0) {
@@ -174,7 +174,7 @@ class MangaChapterController extends BaseController {
 		->groupBy('manga_id ASC')
 		->execute();
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 
 		if ($MCs->count() == 0) {
@@ -201,7 +201,7 @@ class MangaChapterController extends BaseController {
 		$status = Status::findFirst(array('conditions' => "name = :name:", 'bind' => array('name' => $statusName)));
 		$MCs = MangaChapter::find(array('conditions' => 'status_id = :id:', 'bind' => array('id' => $status->getId())));
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 
 		if ($MCs->count() == 0) {
