@@ -80,7 +80,7 @@ class MangaController extends BaseController {
 			'demography_id' => $postData->demographyId
 		));
 		if (!$create) {
-			throw new Exception('Manga instance not created', 409);
+			throw new Exception('Manga instance not created', 500);
 		}
 
 		return array('code' => 201, 'content' => $manga->toArray());
@@ -136,7 +136,7 @@ class MangaController extends BaseController {
 			'demography_id' => $putData->demographyId
 		));
 		if (!$update) {
-			throw new Exception('Manga instance not updated', 409);
+			throw new Exception('Manga instance not updated', 500);
 		}
 
 		return array('code' => 200, 'content' => $manga->toArray());
@@ -166,7 +166,7 @@ class MangaController extends BaseController {
 		$manga->beforeUpdate();
 		$delete = $manga->update(array('status_id' => $statusD->getId()));
 		if (!$delete) {
-			throw new Exception('Manga instance not deleted', 409);
+			throw new Exception('Manga instance not deleted', 500);
 		}
 
 		return array('code' => 204, 'content' => 'Manga instance deleted');
@@ -179,7 +179,7 @@ class MangaController extends BaseController {
 
 		$mangas = Mangas::find(array('order' => 'name ASC'));
 		if (!$mangas) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($mangas->count() == 0) {
 			return array('code' => 204, 'content' => 'No Manga instance found');
@@ -211,7 +211,7 @@ class MangaController extends BaseController {
 		->orderBy('name ASC')
 		->execute();
 		if (!$mangas) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($mangas->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching Manga instance found');
@@ -253,7 +253,7 @@ class MangaController extends BaseController {
 			'order' => 'name ASC'
 		));
 		if (!$mangas) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($mangas->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching Manga instance found');
@@ -289,7 +289,7 @@ class MangaController extends BaseController {
 
 		$MCs = MangaChapter::find(array('conditions' => "manga_id = :id:", 'bind' => array('id' => $mangaId)));
 		if (!$MCs) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($MCs->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching MangaChapter instance found');
