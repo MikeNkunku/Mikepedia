@@ -17,4 +17,6 @@ $mangaCollection->get('/all', 'getAll');
 $mangaCollection->get('/list', 'getValidList');
 $mangaCollection->get('/list/{statusName:w+}', 'getList');
 
+$mangaCollection->get('/{mangaId:[0-9]+}/chapters/all', 'getChapters');
+
 return $mangaCollection;
