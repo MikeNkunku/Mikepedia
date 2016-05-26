@@ -53,7 +53,7 @@ class LyricsController extends BaseController {
 			'content' => $postData->Content
 		));
 		if (!$create) {
-			throw new Exception('Lyrics instance not created', 409);
+			throw new Exception('Lyrics instance not created', 500);
 		}
 
 		return array('code' => 201, 'content' => $lyrics->toArray());
@@ -133,7 +133,7 @@ class LyricsController extends BaseController {
 
 		$lyrics = Lyrics::find();
 		if (!$lyrics) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($lyrics->count() == 0) {
 			return array('code' => 204, 'content' => 'No lyrics instance found');
@@ -154,7 +154,7 @@ class LyricsController extends BaseController {
 		->execute();
 
 		if (!$lyrics) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($lyrics->count() == 0) {
 			return array('code' => 204, 'content' => 'No matching Lyrics instance found');
@@ -185,7 +185,7 @@ class LyricsController extends BaseController {
 		));
 
 		if (!lyrics) {
-			throw new Exception('Query not executed', 409);
+			throw new Exception('Query not executed', 500);
 		}
 		if ($lyrics->count() == 0) {
 			return array('code' => 204, 'content' => 'No lyrics instance found');
